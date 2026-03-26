@@ -628,7 +628,8 @@ const DEFAULT_PRODUCTS = [
     "categoria": "Digitalização",
     "subcategoria": "Digitalização 101 ou mais páginas",
     "preco": 0.15
-  },
+  }
+  
 ];
 
 const DEFAULT_EMPRESA = {
