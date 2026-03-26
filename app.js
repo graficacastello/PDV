@@ -597,7 +597,38 @@ const DEFAULT_PRODUCTS = [
     "subcategoria": "3x4(12 unidades)",
     "preco": 7.0
   },
-
+  {
+    "id": "csv73",
+    "codigo": "DIGIT1",
+    "nome": "Digitalização 1ª Folha",
+    "categoria": "Digitalização",
+    "subcategoria": "Digitalização 1ª Folha",
+    "preco": 1.0
+  },
+   {
+    "id": "csv74",
+    "codigo": "DIGI2a20",
+    "nome": "Digitalização 2 a 20 páginas",
+    "categoria": "Digitalização",
+    "subcategoria": "Digitalização 2 a 20 páginas",
+    "preco": 0.25
+  },
+   {
+    "id": "csv75",
+    "codigo": "DIGI21a100",
+    "nome": "Digitalização 21 a 100 páginas",
+    "categoria": "Digitalização",
+    "subcategoria": "Digitalização 21 a 100 páginas",
+    "preco": 0.20
+  },
+ {
+    "id": "csv76",
+    "codigo": "DIGI101+",
+    "nome": "Digitalização 101 ou mais páginas",
+    "categoria": "Digitalização",
+    "subcategoria": "Digitalização 101 ou mais páginas",
+    "preco": 0.15
+  },
 ];
 
 const DEFAULT_EMPRESA = {
@@ -622,6 +653,7 @@ const CAT_ICONS = {
   'Plastificação': '📚',
   'Encadernações Espiral': '📚',
   'Impressão de Fotos': '📸'
+  'Digitalização': '🧾',
 };
 
 // ===== STORAGE =====
