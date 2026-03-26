@@ -653,7 +653,7 @@ const CAT_ICONS = {
   'Envelopes': '✉️',
   'Plastificação': '📚',
   'Encadernações Espiral': '📚',
-  'Impressão de Fotos': '📸'
+  'Impressão de Fotos': '📸',
   'Digitalização': '🧾',
 };
 
