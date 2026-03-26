@@ -1374,7 +1374,9 @@ function gerarCupom(venda) {
     const subtotal = Math.max(0, subtotalBruto - desconto);
     return `
       <div class="receipt-item">
-        <div class="receipt-item-name">${i.nome}</div>
+        <div class="receipt-item-name">
+  ${i.nome || (PRODUTOS.find(p => p.id === i.id)?.nome) || 'Produto'}
+</div>
         <div class="receipt-item-detail">${i.qty} x ${formatMoney(i.preco)} 
           ${i.desconto > 0 ? `(-${i.tipoDesconto==='percent'?i.desconto+'%':formatMoney(i.desconto)})` : ''}
           = <strong>${formatMoney(subtotal)}</strong></div>
