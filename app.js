@@ -623,7 +623,7 @@ const DEFAULT_PRODUCTS = [
   },
  {
     "id": "csv76",
-    "codigo": "DIGI101+",
+    "codigo": "DIGI101MAIS",
     "nome": "Digitalização 101 ou mais páginas",
     "categoria": "Digitalização",
     "subcategoria": "Digitalização 101 ou mais páginas",
