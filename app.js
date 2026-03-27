@@ -34,7 +34,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "CPB11a30",
     "nome": "11 a 30un",
     "categoria": "Cópias (Xerox)",
-    "subcategoria": "A4 Preto e Branco",
+    "subcategoria": "Cópia A4 Preto e Branco",
     "preco": 0.35
   },
   {
@@ -42,7 +42,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "CPB31a60",
     "nome": "31 a 60un",
     "categoria": "Cópias (Xerox)",
-    "subcategoria": "A4 Preto e Branco",
+    "subcategoria": "Cópia A4 Preto e Branco",
     "preco": 0.3
   },
   {
@@ -50,7 +50,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "CPB61a100",
     "nome": "61 a 100un",
     "categoria": "Cópias (Xerox)",
-    "subcategoria": "A4 Preto e Branco",
+    "subcategoria": "Cópia A4 Preto e Branco",
     "preco": 0.25
   },
   {
@@ -58,7 +58,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "CPB101a200",
     "nome": "101 a 200un",
     "categoria": "Cópias (Xerox)",
-    "subcategoria": "A4 Preto e Branco",
+    "subcategoria": "Cópia A4 Preto e Branco",
     "preco": 0.2
   },
   {
@@ -66,7 +66,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "CPB201mais",
     "nome": "201 ou +",
     "categoria": "Cópias (Xerox)",
-    "subcategoria": "A4 Preto e Branco",
+    "subcategoria": "Cópia A4 Preto e Branco",
     "preco": 0.18
   },
   {
@@ -74,7 +74,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "CCOLOR1a10",
     "nome": "1 a 10un",
     "categoria": "Cópias (Xerox)",
-    "subcategoria": "A4 Colorido",
+    "subcategoria": "Cópia A4 Colorido",
     "preco": 0.9
   },
   {
@@ -82,7 +82,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "CCOLOR11a30",
     "nome": "11 a 30un",
     "categoria": "Cópias (Xerox)",
-    "subcategoria": "A4 Colorido",
+    "subcategoria": "Cópia A4 Colorido",
     "preco": 0.85
   },
   {
@@ -90,7 +90,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "CCOLOR31a60",
     "nome": "31 a 60un",
     "categoria": "Cópias (Xerox)",
-    "subcategoria": "A4 Colorido",
+    "subcategoria": "Cópia A4 Colorido",
     "preco": 0.8
   },
   {
@@ -98,7 +98,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "CCOLOR61a100",
     "nome": "61 a 100un",
     "categoria": "Cópias (Xerox)",
-    "subcategoria": "A4 Colorido",
+    "subcategoria": "Cópia A4 Colorido",
     "preco": 0.75
   },
   {
@@ -106,7 +106,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "CCOLOR101a200",
     "nome": "101 a 200un",
     "categoria": "Cópias (Xerox)",
-    "subcategoria": "A4 Colorido",
+    "subcategoria": "Cópia A4 Colorido",
     "preco": 0.7
   },
   {
@@ -114,7 +114,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "CCOLOR201mais",
     "nome": "201 ou +",
     "categoria": "Cópias (Xerox)",
-    "subcategoria": "A4 Colorido",
+    "subcategoria": "Cópia A4 Colorido",
     "preco": 0.65
   },
   {
@@ -122,7 +122,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMPIGPE1a10",
     "nome": "1 a 10un",
     "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Preto e Branco",
+    "subcategoria": "Cópia A4 Preto e Branco",
     "preco": 0.5
   },
   {
@@ -130,7 +130,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMPIGPE11a30",
     "nome": "11 a 30un",
     "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Preto e Branco",
+    "subcategoria": "Cópia A4 Preto e Branco",
     "preco": 0.45
   },
   {
@@ -330,7 +330,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMC240A4",
     "nome": "A4",
     "categoria": "Cartão 240g",
-    "subcategoria": "A4",
+    "subcategoria": "Cartão A4",
     "preco": 2.8
   },
   {
