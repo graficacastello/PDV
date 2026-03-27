@@ -630,6 +630,248 @@ const DEFAULT_PRODUCTS = [
     "preco": 0.15
   }
   
+  ,
+  {
+    "id": "pap1",
+    "codigo": "PAPCISSPCOLOR",
+    "nome": "Caneta CIS Spiro Colorida",
+    "categoria": "Papelaria",
+    "subcategoria": "Material Escolar",
+    "preco": 3.5
+  },
+  {
+    "id": "pap2",
+    "codigo": "PAPCISTIKAZPRE",
+    "nome": "Cis Tik Azul ou Preta",
+    "categoria": "Papelaria",
+    "subcategoria": "Material Escolar",
+    "preco": 2.5
+  },
+  {
+    "id": "pap3",
+    "codigo": "PAPCOMPACTORAZPRE",
+    "nome": "Compactor Azul ou Preta",
+    "categoria": "Papelaria",
+    "subcategoria": "Material Escolar",
+    "preco": 2.5
+  },
+  {
+    "id": "pap4",
+    "codigo": "PAPMARCATEXTO",
+    "nome": "Marca Texto",
+    "categoria": "Papelaria",
+    "subcategoria": "Material Escolar",
+    "preco": 3.0
+  },
+  {
+    "id": "pap5",
+    "codigo": "PAPLAPISPRETO",
+    "nome": "Lápis Preto",
+    "categoria": "Papelaria",
+    "subcategoria": "Material Escolar",
+    "preco": 1.0
+  },
+  {
+    "id": "pap6",
+    "codigo": "PAPMARCCD",
+    "nome": "Marcador para CD",
+    "categoria": "Papelaria",
+    "subcategoria": "Material Escolar",
+    "preco": 5.0
+  },
+  {
+    "id": "pap7",
+    "codigo": "PAPCOLABASTAO",
+    "nome": "Cola Bastão",
+    "categoria": "Papelaria",
+    "subcategoria": "Material Escolar",
+    "preco": 3.0
+  },
+  {
+    "id": "pap8",
+    "codigo": "PAPBORRACHA",
+    "nome": "Borracha",
+    "categoria": "Papelaria",
+    "subcategoria": "Material Escolar",
+    "preco": 2.5
+  },
+  {
+    "id": "pap9",
+    "codigo": "PAPKITJARDIM",
+    "nome": "Kit Jardim",
+    "categoria": "Papelaria",
+    "subcategoria": "Material Escolar",
+    "preco": 7.5
+  },
+  {
+    "id": "pap10",
+    "codigo": "PAPBLOCRASC",
+    "nome": "Bloco de Rascunho",
+    "categoria": "Papelaria",
+    "subcategoria": "Material Escolar",
+    "preco": 2.0
+  },
+  {
+    "id": "pap11",
+    "codigo": "PAPPACA4",
+    "nome": "Pacote de Papel A4",
+    "categoria": "Papelaria",
+    "subcategoria": "Material Escolar",
+    "preco": 29.0
+  },
+  {
+    "id": "pap12",
+    "codigo": "QUA11X21",
+    "nome": "11x21cm",
+    "categoria": "Papelaria",
+    "subcategoria": "Quadros",
+    "preco": 12.0
+  },
+  {
+    "id": "pap13",
+    "codigo": "QUA12X21",
+    "nome": "12x21cm",
+    "categoria": "Papelaria",
+    "subcategoria": "Quadros",
+    "preco": 12.0
+  },
+  {
+    "id": "pap14",
+    "codigo": "QUA13X21",
+    "nome": "13x21cm",
+    "categoria": "Papelaria",
+    "subcategoria": "Quadros",
+    "preco": 12.0
+  },
+  {
+    "id": "pap15",
+    "codigo": "QUA14X21",
+    "nome": "14x21cm",
+    "categoria": "Papelaria",
+    "subcategoria": "Quadros",
+    "preco": 12.0
+  },
+  {
+    "id": "pap16",
+    "codigo": "QUA15X21",
+    "nome": "15x21cm",
+    "categoria": "Papelaria",
+    "subcategoria": "Quadros",
+    "preco": 12.0
+  },
+  {
+    "id": "pap17",
+    "codigo": "QUA16X21",
+    "nome": "16x21cm",
+    "categoria": "Papelaria",
+    "subcategoria": "Quadros",
+    "preco": 12.0
+  },
+  {
+    "id": "pap18",
+    "codigo": "QUA17X21",
+    "nome": "17x21cm",
+    "categoria": "Papelaria",
+    "subcategoria": "Quadros",
+    "preco": 12.0
+  },
+  {
+    "id": "pap19",
+    "codigo": "QUA18X21",
+    "nome": "18x21cm",
+    "categoria": "Papelaria",
+    "subcategoria": "Quadros",
+    "preco": 12.0
+  },
+  {
+    "id": "pap20",
+    "codigo": "PAPOUTROS1",
+    "nome": "Outros 1",
+    "categoria": "Papelaria",
+    "subcategoria": "Outros",
+    "preco": 12.0
+  },
+  {
+    "id": "pap21",
+    "codigo": "PAPOUTROS2",
+    "nome": "Outros 2",
+    "categoria": "Papelaria",
+    "subcategoria": "Outros",
+    "preco": 12.0
+  },
+  {
+    "id": "pap22",
+    "codigo": "PAPOUTROS3",
+    "nome": "Outros 3",
+    "categoria": "Papelaria",
+    "subcategoria": "Outros",
+    "preco": 12.0
+  },
+  {
+    "id": "pap23",
+    "codigo": "PAPOUTROS4",
+    "nome": "Outros 4",
+    "categoria": "Papelaria",
+    "subcategoria": "Outros",
+    "preco": 12.0
+  },
+  {
+    "id": "pap24",
+    "codigo": "PAPOUTROS5",
+    "nome": "Outros 5",
+    "categoria": "Papelaria",
+    "subcategoria": "Outros",
+    "preco": 12.0
+  },
+  {
+    "id": "pap25",
+    "codigo": "PAPOUTROS6",
+    "nome": "Outros 6",
+    "categoria": "Papelaria",
+    "subcategoria": "Outros",
+    "preco": 12.0
+  },
+  {
+    "id": "pap26",
+    "codigo": "PAPOUTROS7",
+    "nome": "Outros 7",
+    "categoria": "Papelaria",
+    "subcategoria": "Outros",
+    "preco": 12.0
+  },
+  {
+    "id": "pap27",
+    "codigo": "PAPOUTROS8",
+    "nome": "Outros 8",
+    "categoria": "Papelaria",
+    "subcategoria": "Outros",
+    "preco": 12.0
+  },
+  {
+    "id": "pap28",
+    "codigo": "PAPOUTROS9",
+    "nome": "Outros 9",
+    "categoria": "Papelaria",
+    "subcategoria": "Outros",
+    "preco": 12.0
+  },
+  {
+    "id": "pap29",
+    "codigo": "PAPOUTROS10",
+    "nome": "Outros 10",
+    "categoria": "Papelaria",
+    "subcategoria": "Outros",
+    "preco": 12.0
+  },
+  {
+    "id": "pap30",
+    "codigo": "PAPOUTROS11",
+    "nome": "Outros 11",
+    "categoria": "Papelaria",
+    "subcategoria": "Outros",
+    "preco": 12.0
+  }
+
 ];
 
 const DEFAULT_EMPRESA = {
@@ -655,6 +897,7 @@ const CAT_ICONS = {
   'Encadernações Espiral': '📚',
   'Impressão de Fotos': '📸',
   'Digitalização': '🧾',
+  'Papelaria': '🖍️',
 };
 
 
@@ -672,7 +915,8 @@ const CATEGORY_MENU_ORDER = [
   'Encadernações Espiral',
   'Impressão de Fotos',
   'Plastificação',
-  'Envelopes'
+  'Envelopes',
+  'Papelaria'
 ];
 
 const CATEGORY_MENU_LABELS = {
@@ -690,7 +934,8 @@ const CATEGORY_MENU_LABELS = {
   'Impressão de Fotos': 'IMPRESSÕES DE FOTO',
   'Plastificação': 'PLASTIFICAÇÕES',
   'Envelopes': 'ENVELOPES',
-  'Digitalização': 'DIGITALIZAÇÕES'
+  'Digitalização': 'DIGITALIZAÇÕES',
+  'Papelaria': 'PAPELARIA'
 };
 
 // ===== STORAGE =====
@@ -739,7 +984,7 @@ function populateCategoryDatalist() {
   const datalist = document.getElementById('category-datalist');
   if (!datalist) return;
   datalist.innerHTML = '';
-  const cats = [...new Set(state.products.map(p => p.categoria))];
+  const cats = [...new Set(state.products.map(p => p.categoria))].sort((a, b) => String(a).localeCompare(String(b), 'pt-BR'));
   cats.forEach(cat => {
     const opt = document.createElement('option');
     opt.value = cat;
@@ -2332,33 +2577,64 @@ function deleteProduct(id) {
 }
 
 function salvarProduto() {
-  const nome = document.getElementById('prod-nome').value.trim();
+  const nomeEl = document.getElementById('prod-nome');
+  const codigoEl = document.getElementById('prod-codigo');
+  const categoriaEl = document.getElementById('prod-categoria');
+  const subcategoriaEl = document.getElementById('prod-subcategoria');
+  const precoEl = document.getElementById('prod-preco');
+
+  if (!nomeEl || !categoriaEl || !subcategoriaEl || !precoEl) {
+    showToast('Campos do produto não encontrados', 'error');
+    return;
+  }
+
+  const nome = nomeEl.value.trim();
   if (!nome) { showToast('Informe o nome do produto', 'error'); return; }
-  
-  const preco = parseFloat(document.getElementById('prod-preco').value);
+
+  const precoRaw = String(precoEl.value || '').replace(/\./g, '').replace(',', '.').trim();
+  const preco = parseFloat(precoRaw);
   if (isNaN(preco) || preco < 0) { showToast('Informe um preço válido', 'error'); return; }
-  
+
+  const categoria = categoriaEl.value.trim() || 'OUTROS';
+  const subcategoria = subcategoriaEl.value.trim() || 'Geral';
+  const codigoInformado = (codigoEl?.value || '').trim();
+  const codigo = codigoInformado || ('P' + Date.now());
+
+  const codigoDuplicado = state.products.some(p =>
+    String(p.codigo || '').trim().toLowerCase() === codigo.toLowerCase() &&
+    String(p.id) !== String(state.editingProductId || '')
+  );
+
+  if (codigoDuplicado) {
+    showToast('Já existe um produto com esse código', 'error');
+    return;
+  }
+
   const prod = {
-    id: state.editingProductId || 'p'+Date.now(),
-    codigo: document.getElementById('prod-codigo').value || 'P'+Date.now(),
+    id: state.editingProductId || ('p' + Date.now()),
+    codigo,
     nome,
-    categoria: document.getElementById('prod-categoria').value || 'OUTROS',
-    subcategoria: document.getElementById('prod-subcategoria').value || 'Geral',
+    categoria,
+    subcategoria,
     preco
   };
-  
+
   if (state.editingProductId) {
-    state.products = state.products.map(p => p.id === state.editingProductId ? prod : p);
+    state.products = state.products.map(p => String(p.id) === String(state.editingProductId) ? prod : p);
   } else {
     state.products.push(prod);
   }
-  
+
   save('products', state.products);
-  renderProductsList();
-  buildCategories();
   populateCategoryDatalist();
+
+  state.selectedCategory = categoria;
+  state.selectedSubcategory = subcategoria;
+
+  if (typeof renderProductsList === 'function') renderProductsList();
+  buildCategories();
   closeModal('modal-add-product');
-  showToast('Produto salvo!', 'success');
+  showToast(state.editingProductId ? 'Produto atualizado!' : 'Produto salvo!', 'success');
 }
 
 function alterarSenha() {
