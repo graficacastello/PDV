@@ -657,6 +657,42 @@ const CAT_ICONS = {
   'Digitalização': '🧾',
 };
 
+
+const CATEGORY_MENU_ORDER = [
+  'Cópias (Xerox)',
+  'Impressões Pigmentadas',
+  'Impressões Laser',
+  'Couche 250g',
+  'Cartão 240g',
+  'Cartão 180g',
+  'Papel Adesivo',
+  'Vinil Adesivo',
+  'Fotográfico',
+  'Serviços',
+  'Encadernações Espiral',
+  'Impressão de Fotos',
+  'Plastificação',
+  'Envelopes'
+];
+
+const CATEGORY_MENU_LABELS = {
+  'Cópias (Xerox)': 'CÓPIAS',
+  'Impressões Pigmentadas': 'IMPRESSÕES PIGMENTADAS',
+  'Impressões Laser': 'IMPRESSÕES A LASER',
+  'Couche 250g': 'COUCHÊ 250G',
+  'Cartão 240g': 'CARTÃO 240G',
+  'Cartão 180g': 'CARTÃO 180G',
+  'Papel Adesivo': 'PAPEL ADESIVO',
+  'Vinil Adesivo': 'VINIL ADESIVO',
+  'Fotográfico': 'FOTOGRÁFICO',
+  'Serviços': 'SERVIÇOS',
+  'Encadernações Espiral': 'ENCADERNAÇÕES',
+  'Impressão de Fotos': 'IMPRESSÕES DE FOTO',
+  'Plastificação': 'PLASTIFICAÇÕES',
+  'Envelopes': 'ENVELOPES',
+  'Digitalização': 'DIGITALIZAÇÕES'
+};
+
 // ===== STORAGE =====
 function save(key, val) { localStorage.setItem('pdv_'+key, JSON.stringify(val)); }
 function load(key, def) {
@@ -854,7 +890,7 @@ function buildCategories() {
   getOrderedCategories(Object.keys(cats)).forEach(cat => {
     const btn = document.createElement('button');
     btn.className = 'category-btn' + (state.selectedCategory === cat ? ' active' : '');
-    btn.innerHTML = `<span class="cat-icon">${CAT_ICONS[cat] || '📦'}</span> ${cat}`;
+    btn.innerHTML = `<span class="cat-icon">${CAT_ICONS[cat] || '📦'}</span> ${getCategoryMenuLabel(cat)}`;
     btn.onclick = () => showSubcategories(cat, cats[cat], btn);
     btn.draggable = true;
     btn.dataset.category = cat;
@@ -876,13 +912,16 @@ function buildCategories() {
 
 
 function getOrderedCategories(categories) {
-  const savedOrder = load('categoryOrder', []);
-  const available = [...categories].sort((a, b) => a.localeCompare(b, 'pt-BR'));
-  if (!Array.isArray(savedOrder) || !savedOrder.length) return available;
-
-  const ordered = savedOrder.filter(cat => available.includes(cat));
-  const missing = available.filter(cat => !ordered.includes(cat));
+  const available = [...categories];
+  const ordered = CATEGORY_MENU_ORDER.filter(cat => available.includes(cat));
+  const missing = available
+    .filter(cat => !ordered.includes(cat))
+    .sort((a, b) => getCategoryMenuLabel(a).localeCompare(getCategoryMenuLabel(b), 'pt-BR'));
   return [...ordered, ...missing];
+}
+
+function getCategoryMenuLabel(category) {
+  return CATEGORY_MENU_LABELS[category] || String(category || '').toUpperCase();
 }
 
 function getOrderedSubcategories(category, subcategories) {
@@ -897,16 +936,11 @@ function getOrderedSubcategories(category, subcategories) {
 }
 
 function getOrderedProducts(category, subcategory, products) {
-  const orders = load('productOrder', {});
-  const key = `${category}|||${subcategory || ''}`;
-  const savedOrder = orders?.[key] || [];
-  const available = [...products].sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
-  if (!Array.isArray(savedOrder) || !savedOrder.length) return available;
-
-  const map = new Map(available.map(p => [String(p.id), p]));
-  const ordered = savedOrder.map(id => map.get(String(id))).filter(Boolean);
-  const missing = available.filter(p => !savedOrder.includes(String(p.id)));
-  return [...ordered, ...missing];
+  return [...products].sort((a, b) => {
+    const diff = Number(a.preco || 0) - Number(b.preco || 0);
+    if (diff !== 0) return diff;
+    return String(a.nome || '').localeCompare(String(b.nome || ''), 'pt-BR');
+  });
 }
 
 function saveCategoryOrder() {
@@ -1022,7 +1056,7 @@ function renderFloatingMenu(cat, products) {
   }
 
   badge.className = 'floating-buttons';
-  badge.innerHTML = `<button type="button" class="float-btn active"><span>${CAT_ICONS[cat] || '📦'}</span> ${cat}</button>`;
+  badge.innerHTML = `<button type="button" class="float-btn active"><span>${CAT_ICONS[cat] || '📦'}</span> ${getCategoryMenuLabel(cat)}</button>`;
 
   const subcats = getOrderedSubcategories(cat, [...new Set(products.map(p => p.subcategoria))]);
   subWrap.innerHTML = subcats.map(sub => `
@@ -1598,44 +1632,62 @@ function gerarRelatorioFechamento(fechamento, vendas) {
   const hoje = new Date().toLocaleDateString('pt-BR');
 
   let totalGeral = 0, totalDinheiro = 0, totalCartao = 0, totalPix = 0, totalOutros = 0;
+  const paymentCount = { dinheiro: 0, cartao: 0, pix: 0, outros: 0 };
+
   vendas.forEach(v => {
-    totalGeral += v.total;
-    if (v.pagamento === 'dinheiro') totalDinheiro += v.total;
-    else if (v.pagamento === 'credito' || v.pagamento === 'debito') totalCartao += v.total;
-    else if (v.pagamento === 'pix') totalPix += v.total;
-    else totalOutros += v.total;
+    totalGeral += Number(v.total || 0);
+    if (v.pagamento === 'dinheiro') {
+      totalDinheiro += Number(v.total || 0);
+      paymentCount.dinheiro += 1;
+    } else if (v.pagamento === 'credito' || v.pagamento === 'debito') {
+      totalCartao += Number(v.total || 0);
+      paymentCount.cartao += 1;
+    } else if (v.pagamento === 'pix') {
+      totalPix += Number(v.total || 0);
+      paymentCount.pix += 1;
+    } else {
+      totalOutros += Number(v.total || 0);
+      paymentCount.outros += 1;
+    }
   });
 
   const ticketMedio = vendas.length ? totalGeral / vendas.length : 0;
-  const valorInicial = fechamento.valorInicial || 0;
+  const valorInicial = Number(fechamento.valorInicial || 0);
   const valorEsperado = valorInicial + totalDinheiro;
+  const totalItens = vendas.reduce((s, v) => s + v.itens.reduce((ss, i) => ss + Number(i.qty || 0), 0), 0);
 
-  // Produtos mais vendidos
   const prodMap = {};
+  const categoryMap = {};
   vendas.forEach(v => {
     v.itens.forEach(i => {
       const key = (i.subcategoria ? `[${i.subcategoria}] ` : '') + i.nome;
       if (!prodMap[key]) prodMap[key] = { qty: 0, valor: 0 };
-      prodMap[key].qty += i.qty;
-      prodMap[key].valor += i.qty * i.preco;
+      prodMap[key].qty += Number(i.qty || 0);
+      prodMap[key].valor += Number(i.qty || 0) * Number(i.preco || 0);
+
+      const catKey = i.categoria || 'Sem categoria';
+      if (!categoryMap[catKey]) categoryMap[catKey] = { qty: 0, valor: 0 };
+      categoryMap[catKey].qty += Number(i.qty || 0);
+      categoryMap[catKey].valor += Number(i.qty || 0) * Number(i.preco || 0);
     });
   });
-  const topProd = Object.entries(prodMap).sort((a, b) => b[1].valor - a[1].valor);
 
-  // Listagem de todas as vendas
+  const topProd = Object.entries(prodMap).sort((a, b) => b[1].valor - a[1].valor);
+  const topCats = Object.entries(categoryMap).sort((a, b) => b[1].valor - a[1].valor);
+
   const linhasVendas = [...vendas].sort((a, b) => new Date(a.data) - new Date(b.data)).map(v => {
     const itensStr = v.itens.map(i => {
       const sub = i.subcategoria ? `[${i.subcategoria}] ` : '';
       return `${sub}${i.nome} (${i.qty}x ${formatMoney(i.preco)})`;
-    }).join(', ');
+    }).join('<br>');
     return `
       <tr>
-        <td>#${String(v.num).padStart(4,'0')}</td>
+        <td>#${String(v.num).padStart(4, '0')}</td>
         <td>${formatDateTime(new Date(v.data))}</td>
-        <td>${v.cliente?.nome || '—'}</td>
-        <td style="font-size:11px">${itensStr}</td>
-        <td style="text-align:right">${v.pagamentoLabel}</td>
-        <td style="text-align:right;font-weight:bold">${formatMoney(v.total)}</td>
+        <td>${v.cliente?.nome || 'Não identificado'}</td>
+        <td class="items-cell">${itensStr}</td>
+        <td>${v.pagamentoLabel}</td>
+        <td class="td-right"><strong>${formatMoney(v.total)}</strong></td>
       </tr>
     `;
   }).join('');
@@ -1647,164 +1699,178 @@ function gerarRelatorioFechamento(fechamento, vendas) {
   <title>Relatório de Fechamento - ${hoje}</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Arial, sans-serif; font-size: 13px; color: #1a1a1a; background: #f5f5f5; padding: 24px; }
-    .page { background: white; max-width: 900px; margin: 0 auto; padding: 40px; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
-    .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 16px; margin-bottom: 24px; }
-    .header h1 { font-size: 20px; letter-spacing: 1px; text-transform: uppercase; }
-    .header .empresa { font-size: 16px; font-weight: bold; margin-bottom: 4px; }
-    .header .sub { font-size: 12px; color: #555; }
-    .section { margin-bottom: 28px; }
-    .section-title { font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; color: #444; border-bottom: 1px solid #ddd; padding-bottom: 6px; margin-bottom: 12px; }
-    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
-    .kpi { background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 6px; padding: 14px; text-align: center; }
-    .kpi .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #777; margin-bottom: 6px; }
-    .kpi .value { font-size: 18px; font-weight: bold; color: #1a1a1a; }
-    .kpi.green .value { color: #16a34a; }
-    .payment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .pay-row { background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 6px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
-    .pay-row .val { font-weight: bold; font-size: 15px; }
-    table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    thead tr { background: #333; color: white; }
-    thead th { padding: 9px 10px; text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; }
-    tbody tr:nth-child(even) { background: #f8f9fa; }
-    tbody td { padding: 8px 10px; border-bottom: 1px solid #eee; vertical-align: top; }
-    .prod-table td:last-child, .prod-table th:last-child { text-align: right; }
-    .total-row { background: #e8f5e9 !important; font-weight: bold; font-size: 13px; }
-    .footer { text-align: center; margin-top: 32px; padding-top: 16px; border-top: 1px dashed #ccc; font-size: 11px; color: #888; }
-    .info-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 12px; }
+    body { font-family: Inter, Arial, sans-serif; background: #eef2ff; color: #172033; padding: 24px; }
+    .page { max-width: 1120px; margin: 0 auto; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12); }
+    .topbar { background: linear-gradient(135deg, #172554, #312e81); color: white; padding: 32px 36px; }
+    .topbar h1 { font-size: 28px; margin-top: 10px; }
+    .topbar p { opacity: 0.85; margin-top: 6px; font-size: 14px; }
+    .actions { display: flex; justify-content: flex-end; gap: 10px; padding: 18px 24px 0; }
+    .btn { border: none; border-radius: 999px; padding: 10px 18px; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .btn-dark { background: #172554; color: #fff; }
+    .btn-green { background: #16a34a; color: #fff; }
+    .content { padding: 24px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px; }
+    .card { background: #fff; border: 1px solid #e7eaf3; border-radius: 20px; padding: 18px; box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04); }
+    .card h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: #667085; margin-bottom: 10px; }
+    .metric-value { font-size: 28px; font-weight: 800; color: #111827; }
+    .metric-sub { margin-top: 8px; color: #667085; font-size: 13px; }
+    .section { margin-top: 6px; margin-bottom: 20px; }
+    .section-title { font-size: 15px; font-weight: 800; color: #111827; margin-bottom: 12px; }
+    .info-list { display: grid; gap: 10px; }
+    .info-row { display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid #eef2f7; font-size: 13px; }
     .info-row:last-child { border-bottom: none; }
-    .info-row strong { font-size: 13px; }
-    .caixa-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 16px; }
+    .info-row strong { color: #111827; }
+    .pill-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .pill { border-radius: 16px; padding: 14px 16px; background: #f8fafc; border: 1px solid #e7eaf3; }
+    .pill .label { color: #667085; font-size: 12px; margin-bottom: 6px; }
+    .pill .value { font-size: 20px; font-weight: 800; color: #111827; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { background: #172554; color: #fff; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; padding: 12px 14px; text-align: left; }
+    tbody td { padding: 12px 14px; border-bottom: 1px solid #edf1f7; font-size: 13px; vertical-align: top; }
+    tbody tr:nth-child(even) { background: #fafbff; }
+    .td-right { text-align: right; white-space: nowrap; }
+    .items-cell { min-width: 260px; color: #4b5563; line-height: 1.55; }
+    .summary-table tbody td:first-child { font-weight: 700; }
+    .footer { padding: 0 24px 28px; text-align: center; color: #667085; font-size: 12px; }
+    .muted { color: #667085; }
     @media print {
-      body { background: white; padding: 0; }
-      .page { box-shadow: none; padding: 20px; }
-      .no-print { display: none !important; }
+      body { background: #fff; padding: 0; }
+      .page { box-shadow: none; border-radius: 0; }
+      .actions { display: none !important; }
     }
   </style>
 </head>
 <body>
-<div class="page">
+  <div class="page">
+    <div class="actions">
+      <button class="btn btn-dark" onclick="window.print()">🖨️ Imprimir</button>
+      <button class="btn btn-green" onclick="downloadRelatorio()">⬇️ Baixar HTML</button>
+    </div>
 
-  <div class="no-print" style="text-align:right;margin-bottom:16px;display:flex;gap:8px;justify-content:flex-end">
-    <button onclick="window.print()" style="padding:8px 20px;background:#333;color:white;border:none;border-radius:4px;cursor:pointer;font-size:13px">🖨️ Imprimir</button>
-    <button onclick="downloadRelatorio()" style="padding:8px 20px;background:#16a34a;color:white;border:none;border-radius:4px;cursor:pointer;font-size:13px">⬇️ Baixar HTML</button>
-  </div>
+    <div class="topbar">
+      <div style="font-size:13px;opacity:.82">${emp.nome || 'Gráfica Castello'}</div>
+      <h1>Relatório Final de Vendas</h1>
+      <p>${emp.endereco || ''} ${emp.telefone ? '• Tel: ' + emp.telefone : ''}</p>
+      <p>Período do caixa: ${dataAbertura} até ${dataFechamento}</p>
+    </div>
 
-  <div class="header">
-    <div class="empresa">${emp.nome || 'Gráfica Castello'}</div>
-    <div class="sub">${emp.endereco || ''} | Tel: ${emp.telefone || ''}</div>
-    <h1 style="margin-top:12px">Relatório de Fechamento de Caixa</h1>
-    <div class="sub" style="margin-top:4px">${hoje}</div>
-  </div>
+    <div class="content">
+      <div class="grid-4">
+        <div class="card">
+          <h3>Total vendido</h3>
+          <div class="metric-value">${formatMoney(totalGeral)}</div>
+          <div class="metric-sub">${vendas.length} venda(s) concluída(s)</div>
+        </div>
+        <div class="card">
+          <h3>Ticket médio</h3>
+          <div class="metric-value">${formatMoney(ticketMedio)}</div>
+          <div class="metric-sub">Baseado nas vendas do período</div>
+        </div>
+        <div class="card">
+          <h3>Itens vendidos</h3>
+          <div class="metric-value">${totalItens}</div>
+          <div class="metric-sub">Quantidade total de itens</div>
+        </div>
+        <div class="card">
+          <h3>Caixa esperado</h3>
+          <div class="metric-value">${formatMoney(valorEsperado)}</div>
+          <div class="metric-sub">Inicial + total em dinheiro</div>
+        </div>
+      </div>
 
-  <div class="section">
-    <div class="section-title">Informações do Caixa</div>
-    <div class="caixa-box">
-      <div class="info-row"><span>Abertura do Caixa</span><strong>${dataAbertura}</strong></div>
-      <div class="info-row"><span>Fechamento do Caixa</span><strong>${dataFechamento}</strong></div>
-      <div class="info-row"><span>Operador</span><strong>${state.currentUser?.name || 'Admin'}</strong></div>
-      <div class="info-row"><span>Valor Inicial no Caixa</span><strong>${formatMoney(valorInicial)}</strong></div>
-      <div class="info-row"><span>Valor Esperado em Caixa (Inicial + Dinheiro)</span><strong style="color:#16a34a;font-size:15px">${formatMoney(valorEsperado)}</strong></div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="section-title">Resumo do caixa</div>
+          <div class="info-list">
+            <div class="info-row"><span>Abertura</span><strong>${dataAbertura}</strong></div>
+            <div class="info-row"><span>Fechamento</span><strong>${dataFechamento}</strong></div>
+            <div class="info-row"><span>Operador</span><strong>${state.currentUser?.name || 'Admin'}</strong></div>
+            <div class="info-row"><span>Valor inicial</span><strong>${formatMoney(valorInicial)}</strong></div>
+            <div class="info-row"><span>Quantidade de vendas</span><strong>${vendas.length}</strong></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-title">Formas de pagamento</div>
+          <div class="pill-grid">
+            <div class="pill"><div class="label">💵 Dinheiro (${paymentCount.dinheiro})</div><div class="value">${formatMoney(totalDinheiro)}</div></div>
+            <div class="pill"><div class="label">💳 Cartões (${paymentCount.cartao})</div><div class="value">${formatMoney(totalCartao)}</div></div>
+            <div class="pill"><div class="label">⚡ Pix (${paymentCount.pix})</div><div class="value">${formatMoney(totalPix)}</div></div>
+            <div class="pill"><div class="label">💰 Outros (${paymentCount.outros})</div><div class="value">${formatMoney(totalOutros)}</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="section-title">Categorias com maior faturamento</div>
+          <table class="summary-table">
+            <thead>
+              <tr><th>Categoria</th><th class="td-right">Itens</th><th class="td-right">Total</th></tr>
+            </thead>
+            <tbody>
+              ${topCats.length ? topCats.map(([categoria, dados]) => `<tr><td>${getCategoryMenuLabel(categoria)}</td><td class="td-right">${dados.qty}</td><td class="td-right">${formatMoney(dados.valor)}</td></tr>`).join('') : '<tr><td colspan="3" class="muted">Sem dados</td></tr>'}
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="section-title">Produtos vendidos por faturamento</div>
+          <table class="summary-table">
+            <thead>
+              <tr><th>Produto</th><th class="td-right">Qtd</th><th class="td-right">Total</th></tr>
+            </thead>
+            <tbody>
+              ${topProd.length ? topProd.map(([nome, d]) => `<tr><td>${nome}</td><td class="td-right">${d.qty}</td><td class="td-right">${formatMoney(d.valor)}</td></tr>`).join('') : '<tr><td colspan="3" class="muted">Sem dados</td></tr>'}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card section">
+        <div class="section-title">Detalhamento completo das vendas</div>
+        ${vendas.length ? `
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Data/Hora</th>
+                <th>Cliente</th>
+                <th>Itens</th>
+                <th>Pagamento</th>
+                <th class="td-right">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${linhasVendas}
+              <tr>
+                <td colspan="5"><strong>Total geral</strong></td>
+                <td class="td-right"><strong>${formatMoney(totalGeral)}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        ` : '<p class="muted">Nenhuma venda registrada neste período.</p>'}
+      </div>
+    </div>
+
+    <div class="footer">
+      Relatório gerado em ${formatDateTime(new Date())} · PDV Gráfica Castello
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-title">Resumo de Vendas</div>
-    <div class="kpi-grid">
-      <div class="kpi green">
-        <div class="label">Total em Vendas</div>
-        <div class="value">${formatMoney(totalGeral)}</div>
-      </div>
-      <div class="kpi">
-        <div class="label">Qtd. de Vendas</div>
-        <div class="value">${vendas.length}</div>
-      </div>
-      <div class="kpi">
-        <div class="label">Ticket Médio</div>
-        <div class="value">${formatMoney(ticketMedio)}</div>
-      </div>
-      <div class="kpi">
-        <div class="label">Total Itens Vendidos</div>
-        <div class="value">${vendas.reduce((s,v)=>s+v.itens.reduce((ss,i)=>ss+i.qty,0),0)}</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">Formas de Pagamento</div>
-    <div class="payment-grid">
-      <div class="pay-row"><span>💵 Dinheiro</span><span class="val">${formatMoney(totalDinheiro)}</span></div>
-      <div class="pay-row"><span>💳 Cartões (Crédito + Débito)</span><span class="val">${formatMoney(totalCartao)}</span></div>
-      <div class="pay-row"><span>⚡ Pix</span><span class="val">${formatMoney(totalPix)}</span></div>
-      <div class="pay-row"><span>💰 Outros</span><span class="val">${formatMoney(totalOutros)}</span></div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">Produtos Vendidos (por Valor)</div>
-    <table class="prod-table">
-      <thead>
-        <tr>
-          <th>Produto / Subcategoria</th>
-          <th style="text-align:right">Qtd</th>
-          <th style="text-align:right">Total (R$)</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${topProd.map(([nome, d]) => `<tr><td>${nome}</td><td style="text-align:right">${d.qty}</td><td style="text-align:right"><strong>${formatMoney(d.valor)}</strong></td></tr>`).join('')}
-        <tr class="total-row">
-          <td>TOTAL</td>
-          <td style="text-align:right">${topProd.reduce((s,[,d])=>s+d.qty,0)}</td>
-          <td style="text-align:right">${formatMoney(totalGeral)}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="section">
-    <div class="section-title">Detalhamento de Todas as Vendas (${vendas.length})</div>
-    ${vendas.length ? `
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Data/Hora</th>
-          <th>Cliente</th>
-          <th>Itens</th>
-          <th style="text-align:right">Pagamento</th>
-          <th style="text-align:right">Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${linhasVendas}
-        <tr class="total-row">
-          <td colspan="5">TOTAL GERAL</td>
-          <td style="text-align:right">${formatMoney(totalGeral)}</td>
-        </tr>
-      </tbody>
-    </table>` : '<p style="text-align:center;color:#888;padding:20px">Nenhuma venda registrada neste período.</p>'}
-  </div>
-
-  <div class="footer">
-    Relatório gerado em ${formatDateTime(new Date())} · PDV Gráfica Castello v1.0
-  </div>
-</div>
-
-<script>
-function downloadRelatorio() {
-  const html = document.documentElement.outerHTML;
-  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'relatorio-fechamento-${hoje.replace(/\//g,'-')}.html';
-  a.click();
-}
-</script>
+  <script>
+    function downloadRelatorio() {
+      const html = document.documentElement.outerHTML;
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'relatorio-fechamento-${hoje.replace(/\//g, '-')}.html';
+      a.click();
+    }
+  </script>
 </body>
 </html>`;
 
-  // Abrir relatório em nova janela
-  const win = window.open('', '_blank', 'width=960,height=800');
+  const win = window.open('', '_blank', 'width=1180,height=900');
   if (!win) {
     showToast('Libere pop-ups para ver o relatório', 'warning');
     showToast('Caixa fechado com sucesso!', 'success');
@@ -1822,56 +1888,98 @@ function downloadRelatorio() {
 // ===== DASHBOARD (nova funcionalidade) =====
 function loadDashboard() {
   const vendas = load('vendas', []).filter(v => v.status === 'concluida');
-  const today = new Date();
-  const todayKey = today.toISOString().slice(0,10);
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayKey = yesterday.toISOString().slice(0,10);
+  const now = new Date();
+  const todayKey = now.toISOString().slice(0, 10);
 
-  const todayVendas = vendas.filter(v => v.data.slice(0,10) === todayKey);
-  const yesterdayVendas = vendas.filter(v => v.data.slice(0,10) === yesterdayKey);
+  const startOfDay = date => new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const addDays = (date, days) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+  const inRange = (isoDate, start, end) => {
+    const value = new Date(isoDate);
+    return value >= start && value < end;
+  };
 
-  const todayTotal = todayVendas.reduce((sum, v) => sum + v.total, 0);
-  const yesterdayTotal = yesterdayVendas.reduce((sum, v) => sum + v.total, 0);
+  const todayStart = startOfDay(now);
+  const tomorrowStart = addDays(todayStart, 1);
+  const yesterdayStart = addDays(todayStart, -1);
+  const weekStart = addDays(todayStart, -6);
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const todayVendas = vendas.filter(v => inRange(v.data, todayStart, tomorrowStart));
+  const yesterdayVendas = vendas.filter(v => inRange(v.data, yesterdayStart, todayStart));
+  const weekVendas = vendas.filter(v => inRange(v.data, weekStart, tomorrowStart));
+  const monthVendas = vendas.filter(v => inRange(v.data, monthStart, tomorrowStart));
+
+  const sumTotals = arr => arr.reduce((sum, v) => sum + Number(v.total || 0), 0);
+  const sumItems = arr => arr.reduce((sum, v) => sum + v.itens.reduce((ss, i) => ss + Number(i.qty || 0), 0), 0);
+
+  const todayTotal = sumTotals(todayVendas);
+  const yesterdayTotal = sumTotals(yesterdayVendas);
+  const weekTotal = sumTotals(weekVendas);
+  const monthTotal = sumTotals(monthVendas);
   const todayCount = todayVendas.length;
   const yesterdayCount = yesterdayVendas.length;
-
+  const todayItems = sumItems(todayVendas);
   const diffMoney = todayTotal - yesterdayTotal;
   const diffCount = todayCount - yesterdayCount;
 
   const productSales = {};
+  const categorySales = {};
+  const paymentSales = {};
+  const hourlySales = {};
+  const dailySales = {};
+
   todayVendas.forEach(v => {
+    const hour = String(new Date(v.data).getHours()).padStart(2, '0') + 'h';
+    hourlySales[hour] = (hourlySales[hour] || 0) + Number(v.total || 0);
+
+    const paymentKey = v.pagamentoLabel || paymentLabel(v.pagamento);
+    paymentSales[paymentKey] = (paymentSales[paymentKey] || 0) + Number(v.total || 0);
+
     v.itens.forEach(i => {
-      const key = `${i.nome}|||${i.subcategoria || ''}`;
-      if (!productSales[key]) productSales[key] = { nome: i.nome, subcategoria: i.subcategoria || '', qty: 0, valor: 0 };
-      productSales[key].qty += i.qty;
-      productSales[key].valor += i.qty * i.preco;
+      const productKey = `${i.nome}|||${i.subcategoria || ''}`;
+      if (!productSales[productKey]) {
+        productSales[productKey] = { nome: i.nome, subcategoria: i.subcategoria || '', qty: 0, valor: 0 };
+      }
+      productSales[productKey].qty += Number(i.qty || 0);
+      productSales[productKey].valor += Number(i.qty || 0) * Number(i.preco || 0);
+
+      const categoryKey = i.categoria || 'Sem categoria';
+      if (!categorySales[categoryKey]) {
+        categorySales[categoryKey] = { qty: 0, valor: 0 };
+      }
+      categorySales[categoryKey].qty += Number(i.qty || 0);
+      categorySales[categoryKey].valor += Number(i.qty || 0) * Number(i.preco || 0);
     });
   });
 
-  const paymentSales = {};
-  todayVendas.forEach(v => {
-    const key = v.pagamentoLabel || paymentLabel(v.pagamento);
-    paymentSales[key] = (paymentSales[key] || 0) + v.total;
-  });
+  for (let i = 6; i >= 0; i--) {
+    const date = addDays(todayStart, -i);
+    const key = date.toISOString().slice(0, 10);
+    const label = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+    dailySales[label] = vendas
+      .filter(v => v.data.slice(0, 10) === key)
+      .reduce((sum, v) => sum + Number(v.total || 0), 0);
+  }
 
-  const hourlySales = {};
-  todayVendas.forEach(v => {
-    const hour = new Date(v.data).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}).slice(0,2) + 'h';
-    hourlySales[hour] = (hourlySales[hour] || 0) + v.total;
-  });
+  const topProducts = Object.values(productSales).sort((a, b) => {
+    if (b.qty !== a.qty) return b.qty - a.qty;
+    return b.valor - a.valor;
+  }).slice(0, 8);
+  const paymentEntries = Object.entries(paymentSales).sort((a, b) => b[1] - a[1]);
+  const categoryEntries = Object.entries(categorySales).sort((a, b) => b[1].valor - a[1].valor).slice(0, 8);
+  const hourlyEntries = Object.entries(hourlySales).sort((a, b) => a[0].localeCompare(b[0], 'pt-BR'));
+  const dailyEntries = Object.entries(dailySales);
 
-  const topProducts = Object.entries(productSales).sort((a,b) => b[1].qty - a[1].qty).slice(0, 8);
-  const paymentEntries = Object.entries(paymentSales).sort((a,b) => b[1] - a[1]);
-  const hourlyEntries = Object.entries(hourlySales).sort((a,b) => a[0].localeCompare(b[0], 'pt-BR'));
-
-  const maxProductQty = Math.max(1, ...topProducts.map(([,data]) => data.qty));
-  const maxPayment = Math.max(1, ...paymentEntries.map(([,value]) => value));
-  const maxHourly = Math.max(1, ...hourlyEntries.map(([,value]) => value));
+  const maxProductQty = Math.max(1, ...topProducts.map(data => data.qty));
+  const maxPayment = Math.max(1, ...paymentEntries.map(([, value]) => value));
+  const maxCategory = Math.max(1, ...categoryEntries.map(([, value]) => value.valor));
+  const maxHourly = Math.max(1, ...hourlyEntries.map(([, value]) => value));
+  const maxDaily = Math.max(1, ...dailyEntries.map(([, value]) => value));
+  const topCategory = categoryEntries[0];
 
   document.getElementById('dashboard-content').innerHTML = `
-    <div class="kpi-grid" style="grid-column:1/-1">
-      <div class="kpi-card">
+    <div class="kpi-grid dashboard-kpi-grid" style="grid-column:1/-1">
+      <div class="kpi-card kpi-card-highlight">
         <div class="kpi-label">Faturamento de hoje</div>
         <div class="kpi-value">${formatMoney(todayTotal)}</div>
         <div class="kpi-change ${diffMoney >= 0 ? 'kpi-up' : 'kpi-down'}">${diffMoney >= 0 ? '▲' : '▼'} ${formatMoney(Math.abs(diffMoney))} vs. ontem</div>
@@ -1882,35 +1990,68 @@ function loadDashboard() {
         <div class="kpi-change ${diffCount >= 0 ? 'kpi-up' : 'kpi-down'}">${diffCount >= 0 ? '▲' : '▼'} ${Math.abs(diffCount)} vs. ontem</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">Ticket médio</div>
+        <div class="kpi-label">Ticket médio de hoje</div>
         <div class="kpi-value">${formatMoney(todayCount ? todayTotal / todayCount : 0)}</div>
-        <div class="kpi-change">Baseado nas vendas concluídas de hoje</div>
+        <div class="kpi-change">${todayItems} item(ns) vendidos hoje</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Faturamento da semana</div>
+        <div class="kpi-value">${formatMoney(weekTotal)}</div>
+        <div class="kpi-change">Últimos 7 dias</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Faturamento do mês</div>
+        <div class="kpi-value">${formatMoney(monthTotal)}</div>
+        <div class="kpi-change">Mês atual</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Categoria líder hoje</div>
+        <div class="kpi-value kpi-value-sm">${topCategory ? getCategoryMenuLabel(topCategory[0]) : '—'}</div>
+        <div class="kpi-change">${topCategory ? formatMoney(topCategory[1].valor) : 'Sem vendas hoje'}</div>
       </div>
     </div>
 
-    <div class="chart-card">
-      <div class="chart-title">Comparativo hoje x ontem</div>
-      <div class="compare-strip">
+    <div class="chart-card chart-card-wide">
+      <div class="chart-title">Resumo comparativo</div>
+      <div class="compare-strip compare-strip-3">
         <div class="compare-box">
-          Hoje (${todayKey})
+          Hoje
           <strong>${formatMoney(todayTotal)}</strong>
           <small>${todayCount} venda(s)</small>
         </div>
         <div class="compare-box">
-          Ontem (${yesterdayKey})
+          Ontem
           <strong>${formatMoney(yesterdayTotal)}</strong>
           <small>${yesterdayCount} venda(s)</small>
         </div>
+        <div class="compare-box">
+          Semana
+          <strong>${formatMoney(weekTotal)}</strong>
+          <small>${weekVendas.length} venda(s)</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card chart-card-wide">
+      <div class="chart-title">Faturamento dos últimos 7 dias</div>
+      <div class="spark-grid">
+        ${dailyEntries.map(([label, value]) => `
+          <div class="spark-col">
+            <div class="spark-track"><div class="spark-fill" style="height:${(value / maxDaily) * 100}%"></div></div>
+            <div class="spark-value">${formatMoney(value)}</div>
+            <div class="spark-label">${label}</div>
+          </div>
+        `).join('')}
       </div>
     </div>
 
     <div class="chart-card">
       <div class="chart-title">Produtos mais vendidos</div>
       <div class="bar-list">
-        ${topProducts.length ? topProducts.map(([, data]) => `
-          <div class="bar-row">
+        ${topProducts.length ? topProducts.map(data => `
+          <div class="bar-row bar-row-products">
             <div class="bar-label">${data.nome}${data.subcategoria ? `<small>${data.subcategoria}</small>` : ''}</div>
-            <div class="bar-track"><div class="bar-fill" style="width:${(data.qty/maxProductQty)*100}%"></div></div>
+            <div class="bar-track"><div class="bar-fill" style="width:${(data.qty / maxProductQty) * 100}%"></div></div>
             <div class="bar-value">${data.qty} un</div>
           </div>
         `).join('') : '<div class="navigator-empty">Nenhuma venda concluída hoje.</div>'}
@@ -1923,23 +2064,36 @@ function loadDashboard() {
         ${paymentEntries.length ? paymentEntries.map(([forma, valor]) => `
           <div class="bar-row">
             <div class="bar-label">${forma}</div>
-            <div class="bar-track"><div class="bar-fill" style="width:${(valor/maxPayment)*100}%"></div></div>
+            <div class="bar-track"><div class="bar-fill" style="width:${(valor / maxPayment) * 100}%"></div></div>
             <div class="bar-value">${formatMoney(valor)}</div>
           </div>
         `).join('') : '<div class="navigator-empty">Sem pagamentos registrados hoje.</div>'}
       </div>
     </div>
 
-    <div class="chart-card" style="grid-column:1/-1">
+    <div class="chart-card">
+      <div class="chart-title">Categorias com maior faturamento hoje</div>
+      <div class="bar-list">
+        ${categoryEntries.length ? categoryEntries.map(([categoria, dados]) => `
+          <div class="bar-row bar-row-categories">
+            <div class="bar-label">${getCategoryMenuLabel(categoria)}<small>${dados.qty} item(ns)</small></div>
+            <div class="bar-track"><div class="bar-fill" style="width:${(dados.valor / maxCategory) * 100}%"></div></div>
+            <div class="bar-value">${formatMoney(dados.valor)}</div>
+          </div>
+        `).join('') : '<div class="navigator-empty">Sem categorias com vendas hoje.</div>'}
+      </div>
+    </div>
+
+    <div class="chart-card">
       <div class="chart-title">Vendas por horário</div>
       <div class="bar-list">
         ${hourlyEntries.length ? hourlyEntries.map(([hora, valor]) => `
           <div class="bar-row">
             <div class="bar-label">${hora}</div>
-            <div class="bar-track"><div class="bar-fill" style="width:${(valor/maxHourly)*100}%"></div></div>
+            <div class="bar-track"><div class="bar-fill" style="width:${(valor / maxHourly) * 100}%"></div></div>
             <div class="bar-value">${formatMoney(valor)}</div>
           </div>
-        `).join('') : '<div class="navigator-empty">Ainda não há vendas para montar o gráfico de horários.</div>'}
+        `).join('') : '<div class="navigator-empty">Ainda não há vendas para montar o gráfico por horário.</div>'}
       </div>
     </div>
   `;
