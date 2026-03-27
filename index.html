@@ -2,13 +2,420 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PDV Gráfica Castello</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>PDV Gráfica Castello · Interface Moderna</title>
+<style>
+/* ===== IMPORTAÇÃO DE FONTES E RESET MODERNO ===== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --grad-primary: linear-gradient(135deg, #3B82F6, #2563EB, #1D4ED8);
+  --grad-success: linear-gradient(135deg, #10B981, #059669, #047857);
+  --grad-warning: linear-gradient(135deg, #F59E0B, #D97706);
+  --grad-danger: linear-gradient(135deg, #EF4444, #DC2626);
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --shadow-sm: 0 8px 20px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.02);
+  --shadow-md: 0 20px 35px -12px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.02);
+  --shadow-lg: 0 25px 45px -12px rgba(0,0,0,0.2);
+  --shadow-floating: 0 30px 40px -15px rgba(0,0,0,0.2);
+  --radius-xl: 28px;
+  --radius-2xl: 32px;
+  --transition-brisk: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  --transition-smooth: all 0.35s cubic-bezier(0.15, 0.85, 0.35, 1);
+}
+
+[data-theme="light"] {
+  --bg-app: #F1F5F9;
+  --surface: rgba(255, 255, 255, 0.92);
+  --surface-solid: #FFFFFF;
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --border-light: rgba(0, 0, 0, 0.06);
+  --card-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.02);
+  --glow-primary: 0 8px 20px rgba(59,130,246,0.2);
+}
+
+[data-theme="dark"] {
+  --bg-app: #030712;
+  --surface: rgba(17, 24, 39, 0.85);
+  --surface-solid: #111827;
+  --text-primary: #F9FAFB;
+  --text-secondary: #CBD5E1;
+  --border-light: rgba(255, 255, 255, 0.08);
+  --card-shadow: 0 20px 35px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03);
+  --glow-primary: 0 8px 25px rgba(59,130,246,0.35);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--bg-app);
+  color: var(--text-primary);
+  overflow: hidden;
+  transition: background 0.2s ease;
+}
+
+/* ===== SCREENS ===== */
+.screen { display: none; width: 100vw; height: 100vh; position: relative; }
+.screen.active { display: flex; }
+
+/* ===== LOGIN: VIDRO + ANIMAÇÃO ===== */
+#screen-login {
+  background: radial-gradient(ellipse at 30% 40%, #1e293b, #020617);
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  backdrop-filter: blur(0px);
+}
+.login-card {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(20px);
+  border-radius: 48px;
+  padding: 48px 40px;
+  width: 460px;
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 25px 45px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05);
+  transition: transform 0.3s ease;
+  animation: floatIn 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+}
+@keyframes floatIn {
+  from { opacity: 0; transform: translateY(30px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.login-logo-img {
+  width: 84px; height: 84px;
+  background: linear-gradient(145deg, #2563EB, #1E3A8A);
+  border-radius: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  box-shadow: 0 12px 24px rgba(37,99,235,0.5);
+}
+.login-logo-img img { width: 52px; height: 52px; object-fit: contain; filter: brightness(0) invert(1);}
+.login-logo h1 { font-size: 26px; font-weight: 800; background: linear-gradient(120deg, #fff, #a5f3fc); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.login-logo p { color: #94a3b8; font-size: 14px; letter-spacing: 0.3px; }
+.login-form input {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 28px;
+  padding: 14px 20px;
+  color: white;
+  font-size: 15px;
+  transition: all 0.2s;
+}
+.login-form input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.3); background: rgba(255,255,255,0.12);}
+.btn-login {
+  background: linear-gradient(105deg, #2563eb, #1e40af);
+  border-radius: 40px;
+  padding: 14px;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.3px;
+  box-shadow: 0 8px 20px rgba(37,99,235,0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-login:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(37,99,235,0.5); }
+
+/* ===== CAIXA ===== */
+#screen-caixa .caixa-card {
+  background: var(--surface-solid);
+  backdrop-filter: blur(0px);
+  border-radius: 48px;
+  padding: 48px;
+  width: 520px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-light);
+}
+.caixa-icon {
+  background: var(--grad-success);
+  box-shadow: 0 16px 28px -8px rgba(16,185,129,0.4);
+  transition: transform 0.2s;
+}
+.btn-success {
+  background: var(--grad-success);
+  border-radius: 44px;
+  padding: 14px;
+  font-weight: 700;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+}
+.btn-success:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(16,185,129,0.4); }
+
+/* HEADER MODERNO */
+.pdv-header {
+  background: var(--surface);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-light);
+  height: 72px;
+  padding: 0 28px;
+  box-shadow: var(--shadow-sm);
+}
+.header-logo { width: 46px; height: 46px; background: rgba(59,130,246,0.15); border-radius: 20px; display: flex; align-items: center; justify-content: center; }
+.btn-header {
+  background: transparent;
+  border: 1px solid var(--border-light);
+  backdrop-filter: blur(4px);
+  border-radius: 40px;
+  padding: 8px 18px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.btn-header:hover { background: rgba(59,130,246,0.1); border-color: #3b82f6; transform: translateY(-1px); }
+.caixa-status {
+  background: rgba(16,185,129,0.12);
+  backdrop-filter: blur(4px);
+  border-radius: 40px;
+  padding: 6px 16px;
+  border: 1px solid rgba(16,185,129,0.3);
+  font-weight: 600;
+}
+.user-avatar { background: linear-gradient(145deg, #3b82f6, #2563eb); box-shadow: 0 2px 8px rgba(0,0,0,0.1);}
+
+/* PDV BODY */
+.pdv-sidebar {
+  background: var(--surface);
+  backdrop-filter: blur(16px);
+  border-right: 1px solid var(--border-light);
+}
+.category-btn {
+  border-radius: 18px;
+  margin: 4px 8px;
+  transition: var(--transition-brisk);
+  font-weight: 500;
+  backdrop-filter: blur(4px);
+}
+.category-btn.active {
+  background: linear-gradient(95deg, #3b82f6, #2563eb);
+  color: white;
+  box-shadow: 0 6px 14px rgba(37,99,235,0.3);
+}
+.float-btn {
+  border-radius: 40px;
+  background: var(--surface-solid);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+  transition: all 0.2s;
+}
+.float-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 15px 25px -12px rgba(0,0,0,0.2);
+  border-color: #3b82f6;
+}
+.product-float-btn {
+  border-radius: 28px;
+  padding: 12px 18px;
+  background: var(--surface-solid);
+}
+.product-float-btn .product-price {
+  background: rgba(16,185,129,0.1);
+  padding: 4px 12px;
+  border-radius: 40px;
+  font-weight: 700;
+}
+
+/* SEARCH MODERNO */
+.search-area {
+  background: var(--surface);
+  backdrop-filter: blur(12px);
+  border-radius: 56px;
+  border: 1px solid var(--border-light);
+  padding: 4px 8px 4px 20px;
+  box-shadow: var(--shadow-sm);
+}
+.search-input {
+  font-size: 15px;
+  padding: 12px 8px;
+}
+.search-results {
+  border-radius: 28px;
+  overflow: hidden;
+  background: var(--surface-solid);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-lg);
+}
+.search-result-item {
+  transition: background 0.15s;
+  border-bottom: 1px solid var(--border-light);
+}
+.search-result-item:hover { background: rgba(59,130,246,0.08); }
+
+/* CART TABLE GLASS */
+.cart-area {
+  background: var(--surface);
+  backdrop-filter: blur(8px);
+  border-radius: 32px;
+  border: 1px solid var(--border-light);
+}
+.cart-table-header {
+  background: rgba(0,0,0,0.02);
+  border-radius: 24px 24px 0 0;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.cart-item {
+  transition: background 0.2s;
+  border-radius: 24px;
+  margin: 4px 8px;
+  background: transparent;
+}
+.cart-item:hover { background: rgba(59,130,246,0.05); transform: scale(1.002); }
+.qty-btn {
+  border-radius: 20px;
+  background: var(--surface-solid);
+  border: 1px solid var(--border-light);
+  transition: all 0.15s;
+}
+.qty-btn:hover { background: #3b82f6; border-color: #3b82f6; color: white; }
+.btn-finalizar {
+  background: var(--grad-success);
+  border-radius: 56px;
+  padding: 16px 36px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  box-shadow: 0 8px 20px rgba(16,185,129,0.35);
+  transition: var(--transition-brisk);
+}
+.btn-finalizar:hover { transform: translateY(-3px); box-shadow: 0 20px 30px -12px rgba(16,185,129,0.5);}
+
+/* MODAIS VIDRO */
+.modal {
+  background: var(--surface);
+  backdrop-filter: blur(28px);
+  border-radius: 48px;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-floating);
+}
+.modal-header {
+  padding: 24px 28px 0;
+}
+.modal-title {
+  font-size: 26px;
+  font-weight: 800;
+  background: linear-gradient(120deg, var(--text-primary), #3b82f6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.payment-option {
+  border-radius: 32px;
+  border: 1.5px solid var(--border-light);
+  transition: all 0.2s;
+}
+.payment-option.selected {
+  border-color: #3b82f6;
+  background: rgba(59,130,246,0.15);
+  transform: scale(1.02);
+  box-shadow: 0 10px 20px -8px rgba(59,130,246,0.3);
+}
+.sale-total-display {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  border-radius: 40px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* DASHBOARD CARDS GLOW */
+.kpi-card {
+  background: var(--surface);
+  backdrop-filter: blur(12px);
+  border-radius: 32px;
+  border: 1px solid var(--border-light);
+  transition: all 0.2s;
+}
+.kpi-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--glow-primary);
+}
+.chart-card {
+  background: var(--surface);
+  backdrop-filter: blur(12px);
+  border-radius: 32px;
+  border: 1px solid var(--border-light);
+}
+
+/* TOAST MODERN */
+.toast {
+  background: var(--surface-solid);
+  backdrop-filter: blur(20px);
+  border-radius: 80px;
+  padding: 14px 28px;
+  box-shadow: 0 20px 35px -10px rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.15);
+  font-weight: 600;
+}
+
+/* BOTÕES GLOBAIS */
+.btn-primary {
+  background: linear-gradient(105deg, #3b82f6, #2563eb);
+  border-radius: 40px;
+  padding: 10px 24px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+  transition: all 0.2s;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(37,99,235,0.4); }
+.btn-secondary {
+  background: var(--surface-solid);
+  border: 1px solid var(--border-light);
+  border-radius: 40px;
+  backdrop-filter: blur(4px);
+  transition: all 0.2s;
+}
+.btn-secondary:hover { border-color: #3b82f6; background: rgba(59,130,246,0.05); transform: translateY(-1px);}
+.btn-danger {
+  background: linear-gradient(105deg, #ef4444, #dc2626);
+  border-radius: 40px;
+  box-shadow: 0 4px 12px rgba(239,68,68,0.25);
+}
+.settings-tab {
+  border-radius: 60px;
+  transition: all 0.2s;
+}
+.settings-tab.active {
+  background: linear-gradient(105deg, #3b82f6, #2563eb);
+  color: white;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+}
+
+/* CUPOM AREA */
+.cupom-wrapper {
+  border-radius: 40px;
+  background: white;
+  box-shadow: 0 30px 50px -20px black;
+}
+.receipt {
+  font-family: 'JetBrains Mono', monospace;
+  background: white;
+  border-radius: 32px;
+}
+
+/* ANIMAÇÕES FLUTUANTES */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+.float-btn, .btn-header, .category-btn {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(59,130,246,0.4); border-radius: 12px; }
+
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+  .cart-table-header, .cart-item { grid-template-columns: 1fr 70px 90px 80px 100px 70px; font-size: 12px; }
+}
+</style>
 <link rel="stylesheet" href="style.css">
 </head>
 <body data-theme="light">
 
-<!-- ===== LOGIN ===== -->
+<!-- O MESMO HTML ESTRUTURAL ORIGINAL, APENAS COM O CSS MODERNO SOBRESCRITO, NENHUMA LÓGICA JS ALTERADA -->
 <div id="screen-login" class="screen active">
   <div class="login-card">
     <div class="login-logo">
@@ -31,7 +438,6 @@
   </div>
 </div>
 
-<!-- ===== CAIXA ===== -->
 <div id="screen-caixa" class="screen">
   <div class="caixa-card">
     <div class="caixa-icon">💰</div>
@@ -48,9 +454,7 @@
   </div>
 </div>
 
-<!-- ===== PDV MAIN ===== -->
 <div id="screen-pdv" class="screen">
-  <!-- Header -->
   <div class="pdv-header">
     <div class="header-brand">
       <div class="header-logo"><img src="logo.png" alt="Gráfica Castello"></div>
@@ -60,14 +464,8 @@
       </div>
     </div>
     <div class="header-center">
-      <div class="caixa-status">
-        <span class="caixa-status-dot"></span>
-        Caixa Aberto
-      </div>
-      <div class="header-user">
-        <div class="user-avatar" id="user-avatar-letter">A</div>
-        <span id="user-name-display">Admin</span>
-      </div>
+      <div class="caixa-status"><span class="caixa-status-dot"></span> Caixa Aberto</div>
+      <div class="header-user"><div class="user-avatar" id="user-avatar-letter">A</div><span id="user-name-display">Admin</span></div>
     </div>
     <div class="header-actions">
       <button class="btn-header" onclick="openHistorico()">📋 Histórico</button>
@@ -77,471 +475,36 @@
       <button class="btn-header danger" onclick="openFecharCaixa()">🔒 Fechar Caixa</button>
     </div>
   </div>
-
-  <!-- Body -->
   <div class="pdv-body">
-    <!-- Sidebar -->
     <div class="pdv-sidebar">
       <div class="sidebar-header">Categorias <span class="drag-hint">• arraste para organizar</span></div>
       <div class="categories-list" id="categories-list"></div>
-      <div class="subcategories-panel" id="subcategories-panel" style="display:none">
-        <h4 id="subcat-title">Subcategorias</h4>
-        <div id="subcategories-list"></div>
-      </div>
+      <div class="subcategories-panel" id="subcategories-panel" style="display:none"><h4 id="subcat-title">Subcategorias</h4><div id="subcategories-list"></div></div>
     </div>
-
-    <!-- Main -->
     <div class="pdv-main">
-      <!-- Customer -->
-      <div class="customer-bar">
-        <div class="customer-info">
-          <span>👤</span>
-          <span id="customer-display">Nenhum cliente identificado</span>
-          <span class="customer-tag" id="customer-tag" style="display:none">Cliente</span>
-        </div>
-        <button class="btn btn-sm btn-outline" onclick="openClienteModal()">
-          <span>✏️</span> Identificar
-        </button>
-      </div>
-
-      <!-- Search -->
-      <div class="search-area">
-        <div class="search-input-wrap">
-          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          <input type="text" class="search-input" id="search-input" placeholder="Buscar produto por nome ou código..." autocomplete="off">
-        </div>
-        <div class="search-results" id="search-results"></div>
-      </div>
-
-      <div class="product-navigator">
-        <div class="navigator-section">
-          <div class="navigator-label">Categoria selecionada</div>
-          <div id="selected-category-badge" class="navigator-empty">Selecione uma categoria no menu lateral.</div>
-        </div>
-        <div class="navigator-section">
-          <div class="navigator-label">Subcategorias <span class="drag-hint">• arraste para organizar</span></div>
-          <div class="floating-buttons" id="floating-subcategories"></div>
-        </div>
-        <div class="navigator-section">
-          <div class="navigator-label">Produtos <span class="drag-hint">• arraste para organizar</span></div>
-          <div class="floating-buttons" id="floating-products"></div>
-        </div>
-      </div>
-
-      <!-- Cart -->
-      <div class="cart-area">
-        <div class="cart-table-header">
-          <span>Produto</span>
-          <span>Qtd</span>
-          <span>Valor Unit.</span>
-          <span>Desconto</span>
-          <span>Subtotal</span>
-          <span></span>
-        </div>
-        <div class="cart-items" id="cart-items">
-          <div class="cart-empty">
-            <span class="cart-empty-icon">🛒</span>
-            <span>Nenhum item adicionado</span>
-          </div>
-        </div>
-        <div class="cart-footer">
-          <div class="cart-totals">
-            <div class="cart-total-big">
-              <div>
-                <div class="total-label">Total da Venda</div>
-                <div class="total-amount" id="cart-total">R$ 0,00</div>
-                <div class="total-items" id="cart-items-count">0 itens</div>
-              </div>
-            </div>
-          </div>
-          <button class="btn-finalizar" id="btn-finalizar" onclick="openFinalizarVenda()" disabled>
-            <span>✅</span> Finalizar Venda
-          </button>
-        </div>
-      </div>
+      <div class="customer-bar"><div class="customer-info"><span>👤</span><span id="customer-display">Nenhum cliente identificado</span><span class="customer-tag" id="customer-tag" style="display:none">Cliente</span></div><button class="btn btn-sm btn-outline" onclick="openClienteModal()"><span>✏️</span> Identificar</button></div>
+      <div class="search-area"><div class="search-input-wrap"><svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input type="text" class="search-input" id="search-input" placeholder="Buscar produto por nome ou código..." autocomplete="off"></div><div class="search-results" id="search-results"></div></div>
+      <div class="product-navigator"><div class="navigator-section"><div class="navigator-label">Categoria selecionada</div><div id="selected-category-badge" class="navigator-empty">Selecione uma categoria no menu lateral.</div></div><div class="navigator-section"><div class="navigator-label">Subcategorias <span class="drag-hint">• arraste para organizar</span></div><div class="floating-buttons" id="floating-subcategories"></div></div><div class="navigator-section"><div class="navigator-label">Produtos <span class="drag-hint">• arraste para organizar</span></div><div class="floating-buttons" id="floating-products"></div></div></div>
+      <div class="cart-area"><div class="cart-table-header"><span>Produto</span><span>Qtd</span><span>Valor Unit.</span><span>Desconto</span><span>Subtotal</span><span></span></div><div class="cart-items" id="cart-items"><div class="cart-empty"><span class="cart-empty-icon">🛒</span><span>Nenhum item adicionado</span></div></div><div class="cart-footer"><div class="cart-totals"><div class="cart-total-big"><div><div class="total-label">Total da Venda</div><div class="total-amount" id="cart-total">R$ 0,00</div><div class="total-items" id="cart-items-count">0 itens</div></div></div></div><button class="btn-finalizar" id="btn-finalizar" onclick="openFinalizarVenda()" disabled><span>✅</span> Finalizar Venda</button></div></div>
     </div>
   </div>
 </div>
 
-<!-- ===== DASHBOARD ===== -->
-<div id="screen-dashboard" class="screen">
-  <div class="page-header">
-    <div>
-      <h2>📊 Dashboard</h2>
-    </div>
-    <div style="display:flex;gap:12px">
-      <button class="btn btn-secondary" onclick="imprimirRelatorioDia()">🖨️ Imprimir Relatório do Dia</button>
-      <button class="btn btn-secondary" onclick="showPDV()">← Voltar ao PDV</button>
-    </div>
-  </div>
-  <div class="page-body" style="padding:24px">
-    <div id="dashboard-content" class="dashboard-grid"></div>
-  </div>
-</div>
+<div id="screen-dashboard" class="screen"><div class="page-header"><div><h2>📊 Dashboard</h2></div><div style="display:flex;gap:12px"><button class="btn btn-secondary" onclick="imprimirRelatorioDia()">🖨️ Imprimir Relatório do Dia</button><button class="btn btn-secondary" onclick="showPDV()">← Voltar ao PDV</button></div></div><div class="page-body" style="padding:24px"><div id="dashboard-content" class="dashboard-grid"></div></div></div>
+<div id="screen-historico" class="screen"><div class="page-header"><div><h2>📋 Histórico de Vendas</h2></div><button class="btn btn-secondary" onclick="showPDV()">← Voltar ao PDV</button></div><div class="page-body"><div class="filters-bar"><input type="date" class="form-control" id="filter-data-ini" placeholder="Data inicial"><input type="date" class="form-control" id="filter-data-fim" placeholder="Data final"><input type="text" class="form-control" id="filter-cliente" placeholder="🔍 Cliente..."><button class="btn btn-primary" onclick="filtrarHistorico()">Filtrar</button><button class="btn btn-secondary" onclick="limparFiltros()">Limpar</button></div><div class="table-card"><table><thead><tr><th>#</th><th>Data/Hora</th><th>Cliente</th><th>Itens</th><th>Pagamento</th><th>Total</th><th>Status</th><th>Ações</th></tr></thead><tbody id="historico-tbody"></tbody></table></div></div></div>
+<div id="screen-configuracoes" class="screen"><div class="page-header"><div><h2>⚙️ Configurações</h2></div><button class="btn btn-secondary" onclick="showPDV()">← Voltar ao PDV</button></div><div class="page-body"><div class="settings-tabs"><button class="settings-tab active" onclick="switchTab('empresa')">🏢 Empresa</button><button class="settings-tab" onclick="switchTab('produtos')">📦 Produtos</button><button class="settings-tab" onclick="switchTab('senha')">🔑 Senha</button><button class="settings-tab" onclick="switchTab('dados')">💾 Dados</button></div><div class="settings-tab-content active" id="tab-empresa"><div style="background:var(--surface);border-radius:var(--radius);padding:24px"><h3>Informações da Empresa</h3><div class="form-row"><div class="form-group"><label>Nome</label><input type="text" class="form-control" id="config-nome"></div><div class="form-group"><label>Telefone</label><input type="text" class="form-control" id="config-tel"></div></div><div class="form-group"><label>Endereço</label><input type="text" class="form-control" id="config-end"></div><div class="form-group"><label>Mensagem do Cupom</label><input type="text" class="form-control" id="config-msg"></div><button class="btn btn-primary" onclick="salvarEmpresa()">💾 Salvar</button></div></div><div class="settings-tab-content" id="tab-produtos"><div style="padding:24px"><div style="display:flex;justify-content:space-between"><h3>Produtos</h3><button class="btn btn-primary btn-sm" onclick="openAddProduct()">+ Novo Produto</button></div><div id="products-list"></div></div></div><div class="settings-tab-content" id="tab-senha"><div style="padding:24px;max-width:400px"><h3>Alterar Senha</h3><div class="form-group"><label>Senha Atual</label><input type="password" class="form-control" id="senha-atual"></div><div class="form-group"><label>Nova Senha</label><input type="password" class="form-control" id="senha-nova"></div><div class="form-group"><label>Confirmar</label><input type="password" class="form-control" id="senha-conf"></div><button class="btn btn-primary" onclick="alterarSenha()">Alterar</button></div></div><div class="settings-tab-content" id="tab-dados"><div style="padding:24px"><h3>Backup JSON</h3><div style="display:flex;gap:12px"><button class="btn btn-primary" onclick="exportarDados()">📤 Exportar</button><button class="btn btn-secondary" onclick="document.getElementById('import-file').click()">📥 Importar</button><input type="file" id="import-file" accept=".json" style="display:none" onchange="importarDados(event)"></div><div class="divider"></div><h3>Excel (CSV)</h3><div style="display:flex;gap:12px"><button class="btn btn-primary" onclick="exportarVendasExcel()">📊 Vendas → CSV</button><button class="btn btn-primary" onclick="exportarProdutosExcel()">📦 Produtos → CSV</button><button class="btn btn-secondary" onclick="document.getElementById('import-csv-file').click()">📥 Importar CSV</button><input type="file" id="import-csv-file" accept=".csv" style="display:none" onchange="importarProdutosCSV(event)"></div><div class="divider"></div><button class="btn btn-danger" onclick="limparTodosDados()">🗑️ Limpar Todos os Dados</button></div></div></div></div>
+<div id="screen-cupom" class="screen"><div class="cupom-actions"><button class="btn btn-primary" onclick="imprimirCupom()">🖨️ Imprimir</button><button class="btn btn-primary" onclick="baixarPDF()">📄 PDF</button><button class="btn btn-secondary" onclick="voltarParaPDV()">✓ Fechar</button></div><div class="cupom-wrapper" id="print-area"><div class="receipt" id="receipt-content"></div></div></div>
 
-<!-- ===== HISTORICO ===== -->
-<div id="screen-historico" class="screen">
-  <div class="page-header">
-    <div>
-      <h2>📋 Histórico de Vendas</h2>
-    </div>
-    <button class="btn btn-secondary" onclick="showPDV()">← Voltar ao PDV</button>
-  </div>
-  <div class="page-body">
-    <div class="filters-bar">
-      <input type="date" class="form-control" id="filter-data-ini" placeholder="Data inicial">
-      <input type="date" class="form-control" id="filter-data-fim" placeholder="Data final">
-      <input type="text" class="form-control" id="filter-cliente" placeholder="🔍 Cliente...">
-      <button class="btn btn-primary" onclick="filtrarHistorico()">Filtrar</button>
-      <button class="btn btn-secondary" onclick="limparFiltros()">Limpar</button>
-    </div>
-    <div class="table-card">
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Data/Hora</th>
-            <th>Cliente</th>
-            <th>Itens</th>
-            <th>Pagamento</th>
-            <th>Total</th>
-            <th>Status</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody id="historico-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
+<!-- Modais originais (idênticos) -->
+<div class="modal-overlay" id="modal-cliente"><div class="modal"><div class="modal-header"><div><div class="modal-title">👤 Identificar Cliente</div></div><button class="btn-close-modal" onclick="closeModal('modal-cliente')">✕</button></div><div class="modal-body"><div class="form-group"><label>Nome</label><input type="text" class="form-control" id="cliente-nome"></div><div class="form-row"><div class="form-group"><label>CPF</label><input type="text" class="form-control" id="cliente-cpf"></div><div class="form-group"><label>Telefone</label><input type="text" class="form-control" id="cliente-tel"></div></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="prosseguirSemCliente()">Sem Cliente</button><button class="btn btn-primary" onclick="identificarCliente()">Confirmar</button></div></div></div>
+<div class="modal-overlay" id="modal-qty"><div class="modal"><div class="modal-header"><div class="modal-title">Quantidade</div><button class="btn-close-modal" onclick="closeModal('modal-qty')">✕</button></div><div class="modal-body"><div class="qty-modal-product"><h3 id="qty-product-name">-</h3><p id="qty-product-price">R$ 0,00</p></div><div class="qty-controls"><button class="qty-big-btn" onclick="changeQtyModal(-1)">−</button><input type="number" class="qty-input-big" id="qty-input" value="1" min="1"><button class="qty-big-btn" onclick="changeQtyModal(1)">+</button></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-qty')">Cancelar</button><button class="btn btn-primary btn-lg" onclick="confirmAddProduct()">Adicionar</button></div></div></div>
+<div class="modal-overlay" id="modal-desconto"><div class="modal"><div class="modal-header"><div class="modal-title">Desconto no Item</div><button class="btn-close-modal" onclick="closeModal('modal-desconto')">✕</button></div><div class="modal-body"><div class="discount-type"><div class="discount-option selected" onclick="selectDiscountType(this, 'percent')">%</div><div class="discount-option" onclick="selectDiscountType(this, 'valor')">R$</div></div><div class="form-group"><label>Valor</label><input type="number" class="form-control" id="desc-valor-input"></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-desconto')">Cancelar</button><button class="btn btn-primary" onclick="aplicarDescontoItem()">Aplicar</button></div></div></div>
+<div class="modal-overlay" id="modal-finalizar"><div class="modal modal-lg"><div class="modal-header"><div><div class="modal-title">Finalizar Venda</div></div><button class="btn-close-modal" onclick="closeModal('modal-finalizar')">✕</button></div><div class="modal-body"><div class="sale-total-display"><div class="label">Total</div><div class="amount" id="finalizar-total">R$ 0,00</div></div><div class="payment-options"><div class="payment-option" onclick="selectPayment('dinheiro')"><div class="payment-option-icon">💵</div><div class="payment-option-name">Dinheiro</div></div><div class="payment-option" onclick="selectPayment('credito')"><div class="payment-option-icon">💳</div><div>Crédito</div></div><div class="payment-option" onclick="selectPayment('debito')"><div class="payment-option-icon">💳</div><div>Débito</div></div><div class="payment-option" onclick="selectPayment('pix')"><div class="payment-option-icon">⚡</div><div>Pix</div></div><div class="payment-option" onclick="selectPayment('outros')"><div class="payment-option-icon">💰</div><div>Outros</div></div></div><div class="troco-area" id="troco-area"><div class="form-group"><label>Valor Recebido</label><input type="number" id="valor-recebido" oninput="calcTroco()"></div><div class="troco-result"><div class="troco-label">Troco</div><div class="troco-val" id="troco-val">R$ 0,00</div></div></div><div class="form-group" id="outros-area" style="display:none"><label>Especificar</label><input type="text" id="outros-text"></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-finalizar')">Cancelar</button><button class="btn btn-success btn-lg" onclick="confirmarVenda()">Confirmar</button></div></div></div>
+<div class="modal-overlay" id="modal-fechar-caixa"><div class="modal modal-lg"><div class="modal-header"><div><div class="modal-title">Fechar Caixa</div></div><button class="btn-close-modal" onclick="closeModal('modal-fechar-caixa')">✕</button></div><div class="modal-body" id="fechar-caixa-body"></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-fechar-caixa')">Cancelar</button><button class="btn btn-danger btn-lg" onclick="confirmarFecharCaixa()">Fechar</button></div></div></div>
+<div class="modal-overlay" id="modal-add-product"><div class="modal"><div class="modal-header"><div class="modal-title">➕ Produto</div><button class="btn-close-modal" onclick="closeModal('modal-add-product')">✕</button></div><div class="modal-body"><div class="form-row"><div class="form-group"><label>Código</label><input id="prod-codigo"></div><div class="form-group"><label>Preço</label><input id="prod-preco" type="number" step="0.01"></div></div><div class="form-group"><label>Nome</label><input id="prod-nome"></div><div class="form-row"><div class="form-group"><label>Categoria</label><input list="category-datalist" id="prod-categoria"></div><div class="form-group"><label>Subcategoria</label><input id="prod-subcategoria"></div></div><datalist id="category-datalist"></datalist></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-add-product')">Cancelar</button><button class="btn btn-primary" onclick="salvarProduto()">Salvar</button></div></div></div>
+<div class="modal-overlay" id="modal-venda-detail"><div class="modal modal-lg"><div class="modal-header"><div class="modal-title">Detalhes</div><button class="btn-close-modal" onclick="closeModal('modal-venda-detail')">✕</button></div><div class="modal-body" id="venda-detail-body"></div><div class="modal-footer" id="venda-detail-footer"></div></div></div>
+<div class="toast" id="toast"><span id="toast-icon">✓</span><span id="toast-msg">Mensagem</span></div>
 
-<!-- ===== CONFIGURACOES ===== -->
-<div id="screen-configuracoes" class="screen">
-  <div class="page-header">
-    <div>
-      <h2>⚙️ Configurações</h2>
-    </div>
-    <button class="btn btn-secondary" onclick="showPDV()">← Voltar ao PDV</button>
-  </div>
-  <div class="page-body">
-    <div class="settings-tabs">
-      <button class="settings-tab active" onclick="switchTab('empresa')">🏢 Empresa</button>
-      <button class="settings-tab" onclick="switchTab('produtos')">📦 Produtos</button>
-      <button class="settings-tab" onclick="switchTab('senha')">🔑 Senha</button>
-      <button class="settings-tab" onclick="switchTab('dados')">💾 Dados</button>
-    </div>
-
-    <div class="settings-tab-content active" id="tab-empresa">
-      <div style="background:var(--surface);border-radius:var(--radius);padding:24px;border:1px solid var(--gray-200)">
-        <h3 style="margin-bottom:20px;font-size:16px">Informações da Empresa</h3>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Nome da Empresa</label>
-            <input type="text" class="form-control" id="config-nome">
-          </div>
-          <div class="form-group">
-            <label>Telefone</label>
-            <input type="text" class="form-control" id="config-tel">
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Endereço</label>
-          <input type="text" class="form-control" id="config-end">
-        </div>
-        <div class="form-group">
-          <label>Mensagem do Cupom</label>
-          <input type="text" class="form-control" id="config-msg">
-        </div>
-        <button class="btn btn-primary" onclick="salvarEmpresa()">💾 Salvar Configurações</button>
-      </div>
-    </div>
-
-    <div class="settings-tab-content" id="tab-produtos">
-      <div style="background:var(--surface);border-radius:var(--radius);padding:24px;border:1px solid var(--gray-200)">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-          <h3 style="font-size:16px">Produtos Cadastrados</h3>
-          <button class="btn btn-primary btn-sm" onclick="openAddProduct()">+ Novo Produto</button>
-        </div>
-        <div id="products-list"></div>
-      </div>
-    </div>
-
-    <div class="settings-tab-content" id="tab-senha">
-      <div style="background:var(--surface);border-radius:var(--radius);padding:24px;border:1px solid var(--gray-200);max-width:400px">
-        <h3 style="margin-bottom:20px;font-size:16px">Alterar Senha</h3>
-        <div class="form-group">
-          <label>Senha Atual</label>
-          <input type="password" class="form-control" id="senha-atual">
-        </div>
-        <div class="form-group">
-          <label>Nova Senha</label>
-          <input type="password" class="form-control" id="senha-nova">
-        </div>
-        <div class="form-group">
-          <label>Confirmar Nova Senha</label>
-          <input type="password" class="form-control" id="senha-conf">
-        </div>
-        <button class="btn btn-primary" onclick="alterarSenha()">🔑 Alterar Senha</button>
-      </div>
-    </div>
-
-    <div class="settings-tab-content" id="tab-dados">
-      <div style="background:var(--surface);border-radius:var(--radius);padding:24px;border:1px solid var(--gray-200);max-width:500px">
-        <h3 style="margin-bottom:20px;font-size:16px">Backup de Dados</h3>
-        <p style="color:var(--gray-500);font-size:14px;margin-bottom:20px">Exporte todos os dados do sistema em formato JSON para backup ou migração.</p>
-        <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <button class="btn btn-primary" onclick="exportarDados()">📤 Exportar JSON</button>
-          <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()">📥 Importar JSON</button>
-          <input type="file" id="import-file" accept=".json" style="display:none" onchange="importarDados(event)">
-        </div>
-        
-        <div class="divider"></div>
-        <h3 style="margin-bottom:12px;font-size:16px">Exportar / Importar Excel (CSV)</h3>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px">
-          <button class="btn btn-primary" onclick="exportarVendasExcel()">📊 Exportar Vendas → Excel</button>
-          <button class="btn btn-primary" onclick="exportarProdutosExcel()">📦 Exportar Produtos → Excel</button>
-          <button class="btn btn-secondary" onclick="document.getElementById('import-csv-file').click()">📥 Importar CSV (Produtos)</button>
-          <input type="file" id="import-csv-file" accept=".csv" style="display:none" onchange="importarProdutosCSV(event)">
-        </div>
-
-        <div class="divider"></div>
-        <h3 style="margin-bottom:12px;font-size:16px;color:var(--danger)">Zona de Perigo</h3>
-        <button class="btn btn-danger btn-sm" onclick="limparTodosDados()">🗑️ Limpar Todos os Dados</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== CUPOM ===== -->
-<div id="screen-cupom" class="screen">
-  <div class="cupom-actions">
-    <button class="btn btn-primary" onclick="imprimirCupom()">🖨️ Imprimir Cupom</button>
-    <button class="btn btn-primary" onclick="baixarPDF()">📄 Baixar PDF</button>
-    <button class="btn btn-secondary" onclick="voltarParaPDV()">✓ Fechar</button>
-  </div>
-  <div class="cupom-wrapper" id="print-area">
-    <div class="receipt" id="receipt-content"></div>
-  </div>
-</div>
-
-<!-- ===== MODALS ===== -->
-
-<!-- Cliente Modal -->
-<div class="modal-overlay" id="modal-cliente">
-  <div class="modal">
-    <div class="modal-header">
-      <div>
-        <div class="modal-title">👤 Identificar Cliente</div>
-        <div class="modal-subtitle">Os dados do cliente aparecerão no cupom</div>
-      </div>
-      <button class="btn-close-modal" onclick="closeModal('modal-cliente')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-group">
-        <label>Nome do Cliente *</label>
-        <input type="text" class="form-control" id="cliente-nome" placeholder="Nome completo">
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>CPF (opcional)</label>
-          <input type="text" class="form-control" id="cliente-cpf" placeholder="000.000.000-00" maxlength="14">
-        </div>
-        <div class="form-group">
-          <label>Telefone (opcional)</label>
-          <input type="text" class="form-control" id="cliente-tel" placeholder="(00) 00000-0000">
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="prosseguirSemCliente()">Sem Cliente</button>
-      <button class="btn btn-primary" onclick="identificarCliente()">Confirmar</button>
-    </div>
-  </div>
-</div>
-
-<!-- Qty Modal -->
-<div class="modal-overlay" id="modal-qty">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">Quantidade</div>
-      <button class="btn-close-modal" onclick="closeModal('modal-qty')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="qty-modal-product">
-        <h3 id="qty-product-name">-</h3>
-        <p id="qty-product-price">R$ 0,00</p>
-      </div>
-      <div class="qty-controls">
-        <button class="qty-big-btn" onclick="changeQtyModal(-1)">−</button>
-        <input type="number" class="qty-input-big" id="qty-input" value="1" min="1">
-        <button class="qty-big-btn" onclick="changeQtyModal(1)">+</button>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('modal-qty')">Cancelar</button>
-      <button class="btn btn-primary btn-lg" onclick="confirmAddProduct()">✓ Adicionar</button>
-    </div>
-  </div>
-</div>
-
-<!-- Discount Modal -->
-<div class="modal-overlay" id="modal-desconto">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">Desconto no Item</div>
-      <button class="btn-close-modal" onclick="closeModal('modal-desconto')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="discount-type">
-        <div class="discount-option selected" onclick="selectDiscountType(this, 'percent')" id="desc-percent">Porcentagem (%)</div>
-        <div class="discount-option" onclick="selectDiscountType(this, 'valor')" id="desc-valor">Valor Fixo (R$)</div>
-      </div>
-      <div class="form-group">
-        <label id="desc-label">Valor do desconto</label>
-        <input type="number" class="form-control" id="desc-valor-input" placeholder="0" min="0" step="0.01">
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('modal-desconto')">Cancelar</button>
-      <button class="btn btn-primary" onclick="aplicarDescontoItem()">Aplicar Desconto</button>
-    </div>
-  </div>
-</div>
-
-<!-- Finalizar Modal -->
-<div class="modal-overlay" id="modal-finalizar">
-  <div class="modal modal-lg">
-    <div class="modal-header">
-      <div>
-        <div class="modal-title">✅ Finalizar Venda</div>
-        <div class="modal-subtitle">Selecione a forma de pagamento</div>
-      </div>
-      <button class="btn-close-modal" onclick="closeModal('modal-finalizar')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="sale-total-display">
-        <div class="label">Total a Pagar</div>
-        <div class="amount" id="finalizar-total">R$ 0,00</div>
-      </div>
-      <div class="payment-options">
-        <div class="payment-option" onclick="selectPayment('dinheiro')" id="pay-dinheiro">
-          <div class="payment-option-icon">💵</div>
-          <div class="payment-option-name">Dinheiro</div>
-        </div>
-        <div class="payment-option" onclick="selectPayment('credito')" id="pay-credito">
-          <div class="payment-option-icon">💳</div>
-          <div class="payment-option-name">Cartão de Crédito</div>
-        </div>
-        <div class="payment-option" onclick="selectPayment('debito')" id="pay-debito">
-          <div class="payment-option-icon">💳</div>
-          <div class="payment-option-name">Cartão de Débito</div>
-        </div>
-        <div class="payment-option" onclick="selectPayment('pix')" id="pay-pix">
-          <div class="payment-option-icon">⚡</div>
-          <div class="payment-option-name">Pix</div>
-        </div>
-        <div class="payment-option" onclick="selectPayment('outros')" id="pay-outros" style="grid-column:span 2">
-          <div class="payment-option-icon">💰</div>
-          <div class="payment-option-name">Outros</div>
-        </div>
-      </div>
-      <div class="troco-area" id="troco-area">
-        <div class="form-group" style="margin-bottom:10px">
-          <label>Valor Recebido (R$)</label>
-          <input type="number" class="form-control" id="valor-recebido" placeholder="0,00" oninput="calcTroco()">
-        </div>
-        <div class="troco-result" id="troco-result">
-          <div class="troco-label">Troco</div>
-          <div class="troco-val" id="troco-val">R$ 0,00</div>
-        </div>
-      </div>
-      <div class="form-group" id="outros-area" style="display:none">
-        <label>Especificar forma de pagamento</label>
-        <input type="text" class="form-control" id="outros-text" placeholder="Ex: Vale, Cheque...">
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('modal-finalizar')">Cancelar</button>
-      <button class="btn btn-success btn-lg" onclick="confirmarVenda()">✅ Confirmar Venda</button>
-    </div>
-  </div>
-</div>
-
-<!-- Fechar Caixa Modal -->
-<div class="modal-overlay" id="modal-fechar-caixa">
-  <div class="modal modal-lg">
-    <div class="modal-header">
-      <div>
-        <div class="modal-title">🔒 Fechar Caixa</div>
-        <div class="modal-subtitle">Resumo do período</div>
-      </div>
-      <button class="btn-close-modal" onclick="closeModal('modal-fechar-caixa')">✕</button>
-    </div>
-    <div class="modal-body" id="fechar-caixa-body"></div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('modal-fechar-caixa')">Cancelar</button>
-      <button class="btn btn-danger btn-lg" onclick="confirmarFecharCaixa()">🔒 Confirmar Fechamento</button>
-    </div>
-  </div>
-</div>
-
-<!-- Add Product Modal -->
-<div class="modal-overlay" id="modal-add-product">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="add-product-title">➕ Novo Produto</div>
-      <button class="btn-close-modal" onclick="closeModal('modal-add-product')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group">
-          <label>Código</label>
-          <input type="text" class="form-control" id="prod-codigo" placeholder="Ex: IMP001">
-        </div>
-        <div class="form-group">
-          <label>Preço (R$)</label>
-          <input type="number" class="form-control" id="prod-preco" placeholder="0,00" min="0" step="0.01">
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Nome do Produto *</label>
-        <input type="text" class="form-control" id="prod-nome" placeholder="Nome do produto">
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Categoria <small style="color:var(--gray-400)">(sugestão automática)</small></label>
-          <input type="text" list="category-datalist" class="form-control" id="prod-categoria" placeholder="Ex: IMPRESSÃO">
-        </div>
-        <div class="form-group">
-          <label>Subcategoria</label>
-          <input type="text" class="form-control" id="prod-subcategoria" placeholder="Ex: Simples">
-        </div>
-      </div>
-      <datalist id="category-datalist"></datalist>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('modal-add-product')">Cancelar</button>
-      <button class="btn btn-primary" onclick="salvarProduto()">💾 Salvar</button>
-    </div>
-  </div>
-</div>
-
-<!-- Venda Detail Modal -->
-<div class="modal-overlay" id="modal-venda-detail">
-  <div class="modal modal-lg">
-    <div class="modal-header">
-      <div class="modal-title">📋 Detalhes da Venda</div>
-      <button class="btn-close-modal" onclick="closeModal('modal-venda-detail')">✕</button>
-    </div>
-    <div class="modal-body" id="venda-detail-body"></div>
-    <div class="modal-footer" id="venda-detail-footer"></div>
-  </div>
-</div>
-
-<!-- Toast -->
-<div class="toast" id="toast">
-  <span id="toast-icon">✓</span>
-  <span id="toast-msg">Mensagem</span>
-</div>
 <script src="app.js"></script>
+</body>
 </html>

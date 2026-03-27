@@ -1372,11 +1372,12 @@ function gerarCupom(venda) {
     if (i.tipoDesconto === 'percent') desconto = subtotalBruto * (i.desconto || 0) / 100;
     else desconto = i.desconto || 0;
     const subtotal = Math.max(0, subtotalBruto - desconto);
+    const nomeProduto = i.nome || i.produto?.nome || JSON.stringify(i);
+    const subcatLabel = i.subcategoria ? `<div class="receipt-item-subcat">${i.subcategoria}</div>` : '';
     return `
       <div class="receipt-item">
-        <div class="receipt-item-name">
-  ${i.nome || (PRODUTOS.find(p => p.id === i.id)?.nome) || 'Produto'}
-</div>
+        ${subcatLabel}
+        <div class="receipt-item-name">${nomeProduto}</div>
         <div class="receipt-item-detail">${i.qty} x ${formatMoney(i.preco)} 
           ${i.desconto > 0 ? `(-${i.tipoDesconto==='percent'?i.desconto+'%':formatMoney(i.desconto)})` : ''}
           = <strong>${formatMoney(subtotal)}</strong></div>
@@ -1447,6 +1448,7 @@ function getReceiptPrintDocument() {
       .receipt-row.bold { font-weight:bold; font-size:12px; }
       .receipt-row.total { border-top:1px dashed #ccc; padding-top:8px; margin-top:8px; font-size:14px; font-weight:bold; }
       .receipt-item { margin-bottom:6px; }
+      .receipt-item-subcat { font-size:9px; text-transform:uppercase; letter-spacing:0.8px; color:#888; font-weight:600; margin-bottom:1px; }
       .receipt-item-name { font-weight:bold; font-size:12px; }
       .receipt-item-detail { font-size:11px; color:#555; }
       .receipt-footer { text-align:center; font-size:10px; color:#666; margin-top:16px; border-top:1px dashed #ccc; padding-top:12px; }
@@ -1576,8 +1578,236 @@ function confirmarFecharCaixa() {
   save('session', null);
   
   closeModal('modal-fechar-caixa');
-  showToast('Caixa fechado com sucesso!', 'success');
   
+  // Gerar relatório do dia antes de fechar
+  gerarRelatorioFechamento(fechamento, vendas);
+}
+
+function gerarRelatorioFechamento(fechamento, vendas) {
+  const emp = state.empresa;
+  const dataAbertura = formatDateTime(new Date(fechamento.abertura));
+  const dataFechamento = formatDateTime(new Date(fechamento.fechamento));
+  const hoje = new Date().toLocaleDateString('pt-BR');
+
+  let totalGeral = 0, totalDinheiro = 0, totalCartao = 0, totalPix = 0, totalOutros = 0;
+  vendas.forEach(v => {
+    totalGeral += v.total;
+    if (v.pagamento === 'dinheiro') totalDinheiro += v.total;
+    else if (v.pagamento === 'credito' || v.pagamento === 'debito') totalCartao += v.total;
+    else if (v.pagamento === 'pix') totalPix += v.total;
+    else totalOutros += v.total;
+  });
+
+  const ticketMedio = vendas.length ? totalGeral / vendas.length : 0;
+  const valorInicial = fechamento.valorInicial || 0;
+  const valorEsperado = valorInicial + totalDinheiro;
+
+  // Produtos mais vendidos
+  const prodMap = {};
+  vendas.forEach(v => {
+    v.itens.forEach(i => {
+      const key = (i.subcategoria ? `[${i.subcategoria}] ` : '') + i.nome;
+      if (!prodMap[key]) prodMap[key] = { qty: 0, valor: 0 };
+      prodMap[key].qty += i.qty;
+      prodMap[key].valor += i.qty * i.preco;
+    });
+  });
+  const topProd = Object.entries(prodMap).sort((a, b) => b[1].valor - a[1].valor);
+
+  // Listagem de todas as vendas
+  const linhasVendas = [...vendas].sort((a, b) => new Date(a.data) - new Date(b.data)).map(v => {
+    const itensStr = v.itens.map(i => {
+      const sub = i.subcategoria ? `[${i.subcategoria}] ` : '';
+      return `${sub}${i.nome} (${i.qty}x ${formatMoney(i.preco)})`;
+    }).join(', ');
+    return `
+      <tr>
+        <td>#${String(v.num).padStart(4,'0')}</td>
+        <td>${formatDateTime(new Date(v.data))}</td>
+        <td>${v.cliente?.nome || '—'}</td>
+        <td style="font-size:11px">${itensStr}</td>
+        <td style="text-align:right">${v.pagamentoLabel}</td>
+        <td style="text-align:right;font-weight:bold">${formatMoney(v.total)}</td>
+      </tr>
+    `;
+  }).join('');
+
+  const reportHtml = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Relatório de Fechamento - ${hoje}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; font-size: 13px; color: #1a1a1a; background: #f5f5f5; padding: 24px; }
+    .page { background: white; max-width: 900px; margin: 0 auto; padding: 40px; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
+    .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 16px; margin-bottom: 24px; }
+    .header h1 { font-size: 20px; letter-spacing: 1px; text-transform: uppercase; }
+    .header .empresa { font-size: 16px; font-weight: bold; margin-bottom: 4px; }
+    .header .sub { font-size: 12px; color: #555; }
+    .section { margin-bottom: 28px; }
+    .section-title { font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; color: #444; border-bottom: 1px solid #ddd; padding-bottom: 6px; margin-bottom: 12px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+    .kpi { background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 6px; padding: 14px; text-align: center; }
+    .kpi .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #777; margin-bottom: 6px; }
+    .kpi .value { font-size: 18px; font-weight: bold; color: #1a1a1a; }
+    .kpi.green .value { color: #16a34a; }
+    .payment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .pay-row { background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 6px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+    .pay-row .val { font-weight: bold; font-size: 15px; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    thead tr { background: #333; color: white; }
+    thead th { padding: 9px 10px; text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; }
+    tbody tr:nth-child(even) { background: #f8f9fa; }
+    tbody td { padding: 8px 10px; border-bottom: 1px solid #eee; vertical-align: top; }
+    .prod-table td:last-child, .prod-table th:last-child { text-align: right; }
+    .total-row { background: #e8f5e9 !important; font-weight: bold; font-size: 13px; }
+    .footer { text-align: center; margin-top: 32px; padding-top: 16px; border-top: 1px dashed #ccc; font-size: 11px; color: #888; }
+    .info-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 12px; }
+    .info-row:last-child { border-bottom: none; }
+    .info-row strong { font-size: 13px; }
+    .caixa-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 16px; }
+    @media print {
+      body { background: white; padding: 0; }
+      .page { box-shadow: none; padding: 20px; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="no-print" style="text-align:right;margin-bottom:16px;display:flex;gap:8px;justify-content:flex-end">
+    <button onclick="window.print()" style="padding:8px 20px;background:#333;color:white;border:none;border-radius:4px;cursor:pointer;font-size:13px">🖨️ Imprimir</button>
+    <button onclick="downloadRelatorio()" style="padding:8px 20px;background:#16a34a;color:white;border:none;border-radius:4px;cursor:pointer;font-size:13px">⬇️ Baixar HTML</button>
+  </div>
+
+  <div class="header">
+    <div class="empresa">${emp.nome || 'Gráfica Castello'}</div>
+    <div class="sub">${emp.endereco || ''} | Tel: ${emp.telefone || ''}</div>
+    <h1 style="margin-top:12px">Relatório de Fechamento de Caixa</h1>
+    <div class="sub" style="margin-top:4px">${hoje}</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Informações do Caixa</div>
+    <div class="caixa-box">
+      <div class="info-row"><span>Abertura do Caixa</span><strong>${dataAbertura}</strong></div>
+      <div class="info-row"><span>Fechamento do Caixa</span><strong>${dataFechamento}</strong></div>
+      <div class="info-row"><span>Operador</span><strong>${state.currentUser?.name || 'Admin'}</strong></div>
+      <div class="info-row"><span>Valor Inicial no Caixa</span><strong>${formatMoney(valorInicial)}</strong></div>
+      <div class="info-row"><span>Valor Esperado em Caixa (Inicial + Dinheiro)</span><strong style="color:#16a34a;font-size:15px">${formatMoney(valorEsperado)}</strong></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Resumo de Vendas</div>
+    <div class="kpi-grid">
+      <div class="kpi green">
+        <div class="label">Total em Vendas</div>
+        <div class="value">${formatMoney(totalGeral)}</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Qtd. de Vendas</div>
+        <div class="value">${vendas.length}</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Ticket Médio</div>
+        <div class="value">${formatMoney(ticketMedio)}</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Total Itens Vendidos</div>
+        <div class="value">${vendas.reduce((s,v)=>s+v.itens.reduce((ss,i)=>ss+i.qty,0),0)}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Formas de Pagamento</div>
+    <div class="payment-grid">
+      <div class="pay-row"><span>💵 Dinheiro</span><span class="val">${formatMoney(totalDinheiro)}</span></div>
+      <div class="pay-row"><span>💳 Cartões (Crédito + Débito)</span><span class="val">${formatMoney(totalCartao)}</span></div>
+      <div class="pay-row"><span>⚡ Pix</span><span class="val">${formatMoney(totalPix)}</span></div>
+      <div class="pay-row"><span>💰 Outros</span><span class="val">${formatMoney(totalOutros)}</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Produtos Vendidos (por Valor)</div>
+    <table class="prod-table">
+      <thead>
+        <tr>
+          <th>Produto / Subcategoria</th>
+          <th style="text-align:right">Qtd</th>
+          <th style="text-align:right">Total (R$)</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${topProd.map(([nome, d]) => `<tr><td>${nome}</td><td style="text-align:right">${d.qty}</td><td style="text-align:right"><strong>${formatMoney(d.valor)}</strong></td></tr>`).join('')}
+        <tr class="total-row">
+          <td>TOTAL</td>
+          <td style="text-align:right">${topProd.reduce((s,[,d])=>s+d.qty,0)}</td>
+          <td style="text-align:right">${formatMoney(totalGeral)}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Detalhamento de Todas as Vendas (${vendas.length})</div>
+    ${vendas.length ? `
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Data/Hora</th>
+          <th>Cliente</th>
+          <th>Itens</th>
+          <th style="text-align:right">Pagamento</th>
+          <th style="text-align:right">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${linhasVendas}
+        <tr class="total-row">
+          <td colspan="5">TOTAL GERAL</td>
+          <td style="text-align:right">${formatMoney(totalGeral)}</td>
+        </tr>
+      </tbody>
+    </table>` : '<p style="text-align:center;color:#888;padding:20px">Nenhuma venda registrada neste período.</p>'}
+  </div>
+
+  <div class="footer">
+    Relatório gerado em ${formatDateTime(new Date())} · PDV Gráfica Castello v1.0
+  </div>
+</div>
+
+<script>
+function downloadRelatorio() {
+  const html = document.documentElement.outerHTML;
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'relatorio-fechamento-${hoje.replace(/\//g,'-')}.html';
+  a.click();
+}
+</script>
+</body>
+</html>`;
+
+  // Abrir relatório em nova janela
+  const win = window.open('', '_blank', 'width=960,height=800');
+  if (!win) {
+    showToast('Libere pop-ups para ver o relatório', 'warning');
+    showToast('Caixa fechado com sucesso!', 'success');
+    setTimeout(() => showScreen('screen-login'), 500);
+    return;
+  }
+  win.document.open();
+  win.document.write(reportHtml);
+  win.document.close();
+
+  showToast('Caixa fechado! Relatório gerado.', 'success');
   setTimeout(() => showScreen('screen-login'), 500);
 }
 
