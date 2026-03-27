@@ -26,7 +26,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "CPB1a10",
     "nome": "1 a 10un",
     "categoria": "Cópias (Xerox)",
-    "subcategoria": "A4 Preto e Branco",
+    "subcategoria": "Cópia A4 Preto e Branco",
     "preco": 0.4
   },
   {
@@ -122,7 +122,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMPIGPE1a10",
     "nome": "1 a 10un",
     "categoria": "Impressões Pigmentadas",
-    "subcategoria": "Cópia A4 Preto e Branco",
+    "subcategoria": "A4 Impressão Preto e Branco",
     "preco": 0.5
   },
   {
@@ -130,7 +130,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMPIGPE11a30",
     "nome": "11 a 30un",
     "categoria": "Impressões Pigmentadas",
-    "subcategoria": "Cópia A4 Preto e Branco",
+    "subcategoria": "A4 Impressão Preto e Branco",
     "preco": 0.45
   },
   {
@@ -138,7 +138,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMPIGPE31a60",
     "nome": "31 a 60un",
     "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Preto e Branco",
+    "subcategoria": "A4 Impressão Preto e Branco",
     "preco": 0.4
   },
   {
@@ -146,7 +146,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMPIGPE61a100",
     "nome": "61 a 100un",
     "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Preto e Branco",
+    "subcategoria": "A4 Impressão Preto e Branco",
     "preco": 0.35
   },
   {
@@ -154,7 +154,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMPIGPE101a200",
     "nome": "101 a 200un",
     "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Preto e Branco",
+    "subcategoria": "A4 Impressão Preto e Branco",
     "preco": 0.3
   },
   {
@@ -162,7 +162,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMPIGPE201mais",
     "nome": "201 ou +",
     "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Preto e Branco",
+    "subcategoria": "A4 Impressão Preto e Branco",
     "preco": 0.28
   },
   {
@@ -170,7 +170,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMPIGCOLOR1a10",
     "nome": "1 a 10un",
     "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Colorido",
+    "subcategoria": "A4 Impressão Colorido",
     "preco": 1.0
   },
   {
@@ -178,7 +178,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMPIGCOLOR11a30",
     "nome": "11 a 30un",
     "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Colorido",
+    "subcategoria": "A4 Impressão Colorido",
     "preco": 0.95
   },
   {
@@ -186,7 +186,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMPIGCOLOR31a60",
     "nome": "31 a 60un",
     "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Colorido",
+    "subcategoria": "A4 Impressão Colorido",
     "preco": 0.9
   },
   {
@@ -194,7 +194,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMPIGCOLOR61a100",
     "nome": "61 a 100un",
     "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Colorido",
+    "subcategoria": "A4 Impressão Colorido",
     "preco": 0.85
   },
   {
@@ -202,7 +202,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMPIGCOLOR101a200",
     "nome": "101 a 200un",
     "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Colorido",
+    "subcategoria": "A4 Impressão Colorido",
     "preco": 0.8
   },
   {
@@ -210,7 +210,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMPIGCOLOR201mais",
     "nome": "201 ou +",
     "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Colorido",
+    "subcategoria": "A4 Impressão Colorido",
     "preco": 0.75
   },
   {
@@ -218,7 +218,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMLPB1a10",
     "nome": "1 a 10un",
     "categoria": "Impressões Laser",
-    "subcategoria": "A4 Preto e Branco",
+    "subcategoria": "A4 Impressões Laser Preto e Branco",
     "preco": 0.8
   },
   {
@@ -226,7 +226,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMLPB11a30",
     "nome": "11 a 30un",
     "categoria": "Impressões Laser",
-    "subcategoria": "A4 Preto e Branco",
+    "subcategoria": "A4 Impressões Laser Preto e Branco",
     "preco": 0.7
   },
   {
@@ -234,7 +234,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMLPB31a100",
     "nome": "31 a 100un",
     "categoria": "Impressões Laser",
-    "subcategoria": "A4 Preto e Branco",
+    "subcategoria": "A4 Impressões Laser Preto e Branco",
     "preco": 0.6
   },
   {
@@ -242,7 +242,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMLPB101mais",
     "nome": "101un ou +",
     "categoria": "Impressões Laser",
-    "subcategoria": "A4 Preto e Branco",
+    "subcategoria": "A4 Impressões Laser Preto e Branco",
     "preco": 0.5
   },
   {
@@ -250,7 +250,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMLCOLOR1a10",
     "nome": "1 a 10un",
     "categoria": "Impressões Laser",
-    "subcategoria": "A4 Colorido",
+    "subcategoria": "A4 Impressões Laser Colorido",
     "preco": 1.5
   },
   {
@@ -258,7 +258,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMLCOLOR11a30",
     "nome": "11 a 30un",
     "categoria": "Impressões Laser",
-    "subcategoria": "A4 Colorido",
+    "subcategoria": "A4 Impressões Laser Colorido",
     "preco": 1.4
   },
   {
@@ -266,7 +266,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMLCOLOR31a100",
     "nome": "31 a 100un",
     "categoria": "Impressões Laser",
-    "subcategoria": "A4 Colorido",
+    "subcategoria": "A4 Impressões Laser Colorido",
     "preco": 1.3
   },
   {
@@ -274,7 +274,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMLCOLOR101mais",
     "nome": "101un ou +",
     "categoria": "Impressões Laser",
-    "subcategoria": "A4 Colorido",
+    "subcategoria": "A4 Impressões Laser Colorido",
     "preco": 1.2
   },
   {
@@ -282,7 +282,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMA3SF1a10",
     "nome": "1 a 10un",
     "categoria": "Impressões Laser",
-    "subcategoria": "A3 Colorido",
+    "subcategoria": "A3 Impressões Laser Colorido",
     "preco": 3.5
   },
   {
@@ -290,7 +290,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMA3SF11a30",
     "nome": "11 a 30un",
     "categoria": "Impressões Laser",
-    "subcategoria": "A3 Colorido",
+    "subcategoria": "A3 Impressões Laser Colorido",
     "preco": 3.2
   },
   {
@@ -298,7 +298,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMA3SF31a100",
     "nome": "31 a 100un",
     "categoria": "Impressões Laser",
-    "subcategoria": "A3 Colorido",
+    "subcategoria": "A3 Impressões Laser Colorido",
     "preco": 2.8
   },
   {
@@ -306,7 +306,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMA3SF101mais",
     "nome": "101un ou +",
     "categoria": "Impressões Laser",
-    "subcategoria": "A3 Colorido",
+    "subcategoria": "A3 Impressões Laser Colorido",
     "preco": 2.0
   },
   {
@@ -314,7 +314,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMC250A4",
     "nome": "A4",
     "categoria": "Couche 250g",
-    "subcategoria": "A4",
+    "subcategoria": "A4 Couche 250g",
     "preco": 3.0
   },
   {
@@ -322,7 +322,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMC250A3",
     "nome": "A3",
     "categoria": "Couche 250g",
-    "subcategoria": "A3",
+    "subcategoria": "A3 Couche 250g",
     "preco": 5.5
   },
   {
@@ -330,7 +330,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMC240A4",
     "nome": "A4",
     "categoria": "Cartão 240g",
-    "subcategoria": "Cartão A4",
+    "subcategoria": "A4 Cartão 240g",
     "preco": 2.8
   },
   {
@@ -338,7 +338,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMC240A3",
     "nome": "A3",
     "categoria": "Cartão 240g",
-    "subcategoria": "A3",
+    "subcategoria": "A3 Cartão 240g",
     "preco": 5.5
   },
   {
@@ -346,7 +346,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMC180A4",
     "nome": "A4",
     "categoria": "Cartão 180g",
-    "subcategoria": "A4",
+    "subcategoria": "A4 Cartão 180g",
     "preco": 2.5
   },
   {
@@ -354,7 +354,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMC180A3",
     "nome": "A3",
     "categoria": "Cartão 180g",
-    "subcategoria": "A3",
+    "subcategoria": "A3 Cartão 180g",
     "preco": 5.0
   },
   {
@@ -362,7 +362,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMLADA4",
     "nome": "A4",
     "categoria": "Papel Adesivo",
-    "subcategoria": "A4",
+    "subcategoria": "A4 Papel Adesivo",
     "preco": 4.0
   },
   {
@@ -370,7 +370,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMLADA3",
     "nome": "A3",
     "categoria": "Papel Adesivo",
-    "subcategoria": "A3",
+    "subcategoria": "A3 Papel Adesivo",
     "preco": 7.5
   },
   {
@@ -378,7 +378,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMLVADA4",
     "nome": "A4",
     "categoria": "Vinil Adesivo",
-    "subcategoria": "A4",
+    "subcategoria": "A4 Vinil Adesivo",
     "preco": 10.0
   },
   {
@@ -386,7 +386,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMLVADA3",
     "nome": "A3",
     "categoria": "Vinil Adesivo",
-    "subcategoria": "A3",
+    "subcategoria": "A3 Vinil Adesivo",
     "preco": 15.0
   },
   {
@@ -394,7 +394,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMPFOTOA5",
     "nome": "A5 (15x21cm)",
     "categoria": "Fotográfico",
-    "subcategoria": "A5 (15x21cm)",
+    "subcategoria": "A5 Fotográfico(15x21cm)",
     "preco": 2.5
   },
   {
@@ -402,7 +402,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "IMPFOTOA4",
     "nome": "A4 (21x29cm)",
     "categoria": "Fotográfico",
-    "subcategoria": "A4 (21x29cm)",
+    "subcategoria": "A4 Fotográfico(21x29cm)",
     "preco": 5.0
   },
   {
@@ -490,7 +490,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "ENCAD20",
     "nome": "Até 20 folhas",
     "categoria": "Encadernações Espiral",
-    "subcategoria": "Até 20 folhas",
+    "subcategoria": "Até 20 folhas - Encadernação",
     "preco": 3.0
   },
   {
@@ -498,7 +498,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "ENCAD50",
     "nome": "21-50 folhas",
     "categoria": "Encadernações Espiral",
-    "subcategoria": "21-50 folhas",
+    "subcategoria": "21-50 folhas - Encadernação",
     "preco": 4.0
   },
   {
@@ -506,7 +506,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "ENCAD100",
     "nome": "51-100 folhas",
     "categoria": "Encadernações Espiral",
-    "subcategoria": "51-100 folhas",
+    "subcategoria": "51-100 folhas - Encadernação",
     "preco": 5.0
   },
   {
@@ -514,7 +514,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "ENCAD200",
     "nome": "101-200 folhas",
     "categoria": "Encadernações Espiral",
-    "subcategoria": "101-200 folhas",
+    "subcategoria": "101-200 folhas - Encadernação",
     "preco": 6.0
   },
   {
@@ -522,7 +522,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "ENCAD300",
     "nome": "201-300 folhas",
     "categoria": "Encadernações Espiral",
-    "subcategoria": "201-300 folhas",
+    "subcategoria": "201-300 folhas - Encadernação",
     "preco": 8.0
   },
   {
@@ -530,7 +530,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "ENCAD400",
     "nome": "301-400 folhas",
     "categoria": "Encadernações Espiral",
-    "subcategoria": "301-400 folhas",
+    "subcategoria": "301-400 folhas - Encadernação",
     "preco": 10.0
   },
   {
@@ -538,7 +538,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "FOTO14x20",
     "nome": "14x20cm (2 unidades)",
     "categoria": "Impressão de Fotos",
-    "subcategoria": "14x20cm (2 unidades)",
+    "subcategoria": "14x20cm Impressão de Fotos(2 unidades)",
     "preco": 7.0
   },
   {
@@ -546,7 +546,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "FOTO10x14",
     "nome": "10x14cm (4 unidades)",
     "categoria": "Impressão de Fotos",
-    "subcategoria": "10x14cm (4 unidades)",
+    "subcategoria": "10x14cm Impressão de Fotos(4 unidades)",
     "preco": 7.0
   },
   {
@@ -554,7 +554,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "FOTOPOLAROID",
     "nome": "Polaroid (4 unidades)",
     "categoria": "Impressão de Fotos",
-    "subcategoria": "Polaroid (4 unidades)",
+    "subcategoria": "Polaroid Impressão de Fotos(4 unidades)",
     "preco": 7.0
   },
   {
@@ -594,7 +594,7 @@ const DEFAULT_PRODUCTS = [
     "codigo": "FOTO3X4",
     "nome": "3x4 (12 unidades)",
     "categoria": "Impressão de Fotos",
-    "subcategoria": "3x4(12 unidades)",
+    "subcategoria": "3x4 Impressão de Fotos(12 unidades)",
     "preco": 7.0
   },
   {
