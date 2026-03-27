@@ -1114,19 +1114,24 @@ function confirmAddProduct() {
 function openDiscountModal(idx) {
   state.discountItemIndex = idx;
   const item = state.cart[idx];
-  document.getElementById('desc-valor-input').value = item.desconto || 0;
-  // reset visual
+  if (!item) return;
+  const input = document.getElementById('desc-valor-input');
+  if (input) input.value = item.desconto || 0;
   document.querySelectorAll('.discount-option').forEach(el => el.classList.remove('selected'));
-  document.getElementById('desc-' + item.tipoDesconto).classList.add('selected');
-  state.discountType = item.tipoDesconto;
+  const selectedOption = document.getElementById('desc-' + item.tipoDesconto) || document.querySelector(`.discount-option[data-discount-type="${item.tipoDesconto}"]`);
+  if (selectedOption) selectedOption.classList.add('selected');
+  state.discountType = item.tipoDesconto || 'percent';
+  const descLabel = document.getElementById('desc-label');
+  if (descLabel) descLabel.textContent = state.discountType === 'percent' ? 'Porcentagem (%)' : 'Valor Fixo (R$)';
   openModal('modal-desconto');
 }
 
 function selectDiscountType(el, type) {
   document.querySelectorAll('.discount-option').forEach(e => e.classList.remove('selected'));
-  el.classList.add('selected');
+  if (el) el.classList.add('selected');
   state.discountType = type;
-  document.getElementById('desc-label').textContent = type === 'percent' ? 'Porcentagem (%)' : 'Valor Fixo (R$)';
+  const descLabel = document.getElementById('desc-label');
+  if (descLabel) descLabel.textContent = type === 'percent' ? 'Porcentagem (%)' : 'Valor Fixo (R$)';
 }
 
 function aplicarDescontoItem() {
@@ -1302,13 +1307,16 @@ function openFinalizarVenda() {
 function selectPayment(type) {
   state.selectedPayment = type;
   document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
-  document.getElementById('pay-'+type).classList.add('selected');
-  
-  document.getElementById('troco-area').classList.toggle('visible', type === 'dinheiro');
-  document.getElementById('outros-area').style.display = type === 'outros' ? 'block' : 'none';
-  
+  const selectedOption = document.getElementById('pay-' + type) || document.querySelector(`.payment-option[data-payment="${type}"]`);
+  if (selectedOption) selectedOption.classList.add('selected');
+
+  const trocoArea = document.getElementById('troco-area');
+  const outrosArea = document.getElementById('outros-area');
+  if (trocoArea) trocoArea.classList.toggle('visible', type === 'dinheiro');
+  if (outrosArea) outrosArea.style.display = type === 'outros' ? 'block' : 'none';
+
   if (type === 'dinheiro') {
-    setTimeout(() => document.getElementById('valor-recebido').focus(), 100);
+    setTimeout(() => document.getElementById('valor-recebido')?.focus(), 100);
   }
 }
 
@@ -1834,8 +1842,8 @@ function loadDashboard() {
   const productSales = {};
   todayVendas.forEach(v => {
     v.itens.forEach(i => {
-      const key = i.nome;
-      if (!productSales[key]) productSales[key] = {qty:0, valor:0};
+      const key = `${i.nome}|||${i.subcategoria || ''}`;
+      if (!productSales[key]) productSales[key] = { nome: i.nome, subcategoria: i.subcategoria || '', qty: 0, valor: 0 };
       productSales[key].qty += i.qty;
       productSales[key].valor += i.qty * i.preco;
     });
@@ -1899,9 +1907,9 @@ function loadDashboard() {
     <div class="chart-card">
       <div class="chart-title">Produtos mais vendidos</div>
       <div class="bar-list">
-        ${topProducts.length ? topProducts.map(([nome, data]) => `
+        ${topProducts.length ? topProducts.map(([, data]) => `
           <div class="bar-row">
-            <div class="bar-label">${nome}</div>
+            <div class="bar-label">${data.nome}${data.subcategoria ? `<small>${data.subcategoria}</small>` : ''}</div>
             <div class="bar-track"><div class="bar-fill" style="width:${(data.qty/maxProductQty)*100}%"></div></div>
             <div class="bar-value">${data.qty} un</div>
           </div>
