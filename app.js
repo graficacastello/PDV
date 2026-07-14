@@ -11,867 +11,75 @@ let state = {
   editingProductId: null,
   selectedPayment: null,
   pendingProduct: null,
-  discountItemIndex: null,   // novo: índice do item que está recebendo desconto
-  discountType: 'percent',   // novo: tipo de desconto padrão
+  discountItemIndex: null,
+  discountType: 'percent',
   selectedCategory: null,
   selectedSubcategory: null,
   currentCupomHtml: '',
   dragContext: null
 };
 
-// ===== INITIAL DATA =====
+// ===== INITIAL DATA - ATUALIZADO =====
 const DEFAULT_PRODUCTS = [
-  {
-    "id": "csv1",
-    "codigo": "CPB1a10",
-    "nome": "1 a 10un",
-    "categoria": "Cópias (Xerox)",
-    "subcategoria": "Cópia A4 Preto e Branco",
-    "preco": 0.4
-  },
-  {
-    "id": "csv2",
-    "codigo": "CPB11a30",
-    "nome": "11 a 30un",
-    "categoria": "Cópias (Xerox)",
-    "subcategoria": "Cópia A4 Preto e Branco",
-    "preco": 0.35
-  },
-  {
-    "id": "csv3",
-    "codigo": "CPB31a60",
-    "nome": "31 a 60un",
-    "categoria": "Cópias (Xerox)",
-    "subcategoria": "Cópia A4 Preto e Branco",
-    "preco": 0.3
-  },
-  {
-    "id": "csv4",
-    "codigo": "CPB61a100",
-    "nome": "61 a 100un",
-    "categoria": "Cópias (Xerox)",
-    "subcategoria": "Cópia A4 Preto e Branco",
-    "preco": 0.25
-  },
-  {
-    "id": "csv5",
-    "codigo": "CPB101a200",
-    "nome": "101 a 200un",
-    "categoria": "Cópias (Xerox)",
-    "subcategoria": "Cópia A4 Preto e Branco",
-    "preco": 0.2
-  },
-  {
-    "id": "csv6",
-    "codigo": "CPB201mais",
-    "nome": "201 ou +",
-    "categoria": "Cópias (Xerox)",
-    "subcategoria": "Cópia A4 Preto e Branco",
-    "preco": 0.18
-  },
-  {
-    "id": "csv7",
-    "codigo": "CCOLOR1a10",
-    "nome": "1 a 10un",
-    "categoria": "Cópias (Xerox)",
-    "subcategoria": "Cópia A4 Colorido",
-    "preco": 0.9
-  },
-  {
-    "id": "csv8",
-    "codigo": "CCOLOR11a30",
-    "nome": "11 a 30un",
-    "categoria": "Cópias (Xerox)",
-    "subcategoria": "Cópia A4 Colorido",
-    "preco": 0.85
-  },
-  {
-    "id": "csv9",
-    "codigo": "CCOLOR31a60",
-    "nome": "31 a 60un",
-    "categoria": "Cópias (Xerox)",
-    "subcategoria": "Cópia A4 Colorido",
-    "preco": 0.8
-  },
-  {
-    "id": "csv10",
-    "codigo": "CCOLOR61a100",
-    "nome": "61 a 100un",
-    "categoria": "Cópias (Xerox)",
-    "subcategoria": "Cópia A4 Colorido",
-    "preco": 0.75
-  },
-  {
-    "id": "csv11",
-    "codigo": "CCOLOR101a200",
-    "nome": "101 a 200un",
-    "categoria": "Cópias (Xerox)",
-    "subcategoria": "Cópia A4 Colorido",
-    "preco": 0.7
-  },
-  {
-    "id": "csv12",
-    "codigo": "CCOLOR201mais",
-    "nome": "201 ou +",
-    "categoria": "Cópias (Xerox)",
-    "subcategoria": "Cópia A4 Colorido",
-    "preco": 0.65
-  },
-  {
-    "id": "csv13",
-    "codigo": "IMPIGPE1a10",
-    "nome": "1 a 10un",
-    "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Impressão Preto e Branco",
-    "preco": 0.5
-  },
-  {
-    "id": "csv14",
-    "codigo": "IMPIGPE11a30",
-    "nome": "11 a 30un",
-    "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Impressão Preto e Branco",
-    "preco": 0.45
-  },
-  {
-    "id": "csv15",
-    "codigo": "IMPIGPE31a60",
-    "nome": "31 a 60un",
-    "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Impressão Preto e Branco",
-    "preco": 0.4
-  },
-  {
-    "id": "csv16",
-    "codigo": "IMPIGPE61a100",
-    "nome": "61 a 100un",
-    "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Impressão Preto e Branco",
-    "preco": 0.35
-  },
-  {
-    "id": "csv17",
-    "codigo": "IMPIGPE101a200",
-    "nome": "101 a 200un",
-    "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Impressão Preto e Branco",
-    "preco": 0.3
-  },
-  {
-    "id": "csv18",
-    "codigo": "IMPIGPE201mais",
-    "nome": "201 ou +",
-    "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Impressão Preto e Branco",
-    "preco": 0.28
-  },
-  {
-    "id": "csv19",
-    "codigo": "IMPIGCOLOR1a10",
-    "nome": "1 a 10un",
-    "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Impressão Colorido",
-    "preco": 1.0
-  },
-  {
-    "id": "csv20",
-    "codigo": "IMPIGCOLOR11a30",
-    "nome": "11 a 30un",
-    "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Impressão Colorido",
-    "preco": 0.95
-  },
-  {
-    "id": "csv21",
-    "codigo": "IMPIGCOLOR31a60",
-    "nome": "31 a 60un",
-    "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Impressão Colorido",
-    "preco": 0.9
-  },
-  {
-    "id": "csv22",
-    "codigo": "IMPIGCOLOR61a100",
-    "nome": "61 a 100un",
-    "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Impressão Colorido",
-    "preco": 0.85
-  },
-  {
-    "id": "csv23",
-    "codigo": "IMPIGCOLOR101a200",
-    "nome": "101 a 200un",
-    "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Impressão Colorido",
-    "preco": 0.8
-  },
-  {
-    "id": "csv24",
-    "codigo": "IMPIGCOLOR201mais",
-    "nome": "201 ou +",
-    "categoria": "Impressões Pigmentadas",
-    "subcategoria": "A4 Impressão Colorido",
-    "preco": 0.75
-  },
-  {
-    "id": "csv25",
-    "codigo": "IMLPB1a10",
-    "nome": "1 a 10un",
-    "categoria": "Impressões Laser",
-    "subcategoria": "A4 Impressões Laser Preto e Branco",
-    "preco": 0.8
-  },
-  {
-    "id": "csv26",
-    "codigo": "IMLPB11a30",
-    "nome": "11 a 30un",
-    "categoria": "Impressões Laser",
-    "subcategoria": "A4 Impressões Laser Preto e Branco",
-    "preco": 0.7
-  },
-  {
-    "id": "csv27",
-    "codigo": "IMLPB31a100",
-    "nome": "31 a 100un",
-    "categoria": "Impressões Laser",
-    "subcategoria": "A4 Impressões Laser Preto e Branco",
-    "preco": 0.6
-  },
-  {
-    "id": "csv28",
-    "codigo": "IMLPB101mais",
-    "nome": "101un ou +",
-    "categoria": "Impressões Laser",
-    "subcategoria": "A4 Impressões Laser Preto e Branco",
-    "preco": 0.5
-  },
-  {
-    "id": "csv29",
-    "codigo": "IMLCOLOR1a10",
-    "nome": "1 a 10un",
-    "categoria": "Impressões Laser",
-    "subcategoria": "A4 Impressões Laser Colorido",
-    "preco": 1.5
-  },
-  {
-    "id": "csv30",
-    "codigo": "IMLCOLOR11a30",
-    "nome": "11 a 30un",
-    "categoria": "Impressões Laser",
-    "subcategoria": "A4 Impressões Laser Colorido",
-    "preco": 1.4
-  },
-  {
-    "id": "csv31",
-    "codigo": "IMLCOLOR31a100",
-    "nome": "31 a 100un",
-    "categoria": "Impressões Laser",
-    "subcategoria": "A4 Impressões Laser Colorido",
-    "preco": 1.3
-  },
-  {
-    "id": "csv32",
-    "codigo": "IMLCOLOR101mais",
-    "nome": "101un ou +",
-    "categoria": "Impressões Laser",
-    "subcategoria": "A4 Impressões Laser Colorido",
-    "preco": 1.2
-  },
-  {
-    "id": "csv33",
-    "codigo": "IMA3SF1a10",
-    "nome": "1 a 10un",
-    "categoria": "Impressões Laser",
-    "subcategoria": "A3 Impressões Laser Colorido",
-    "preco": 3.5
-  },
-  {
-    "id": "csv34",
-    "codigo": "IMA3SF11a30",
-    "nome": "11 a 30un",
-    "categoria": "Impressões Laser",
-    "subcategoria": "A3 Impressões Laser Colorido",
-    "preco": 3.2
-  },
-  {
-    "id": "csv35",
-    "codigo": "IMA3SF31a100",
-    "nome": "31 a 100un",
-    "categoria": "Impressões Laser",
-    "subcategoria": "A3 Impressões Laser Colorido",
-    "preco": 2.8
-  },
-  {
-    "id": "csv36",
-    "codigo": "IMA3SF101mais",
-    "nome": "101un ou +",
-    "categoria": "Impressões Laser",
-    "subcategoria": "A3 Impressões Laser Colorido",
-    "preco": 2.0
-  },
-  {
-    "id": "csv37",
-    "codigo": "IMC250A4",
-    "nome": "A4",
-    "categoria": "Couche 250g",
-    "subcategoria": "A4 Couche 250g",
-    "preco": 3.0
-  },
-  {
-    "id": "csv38",
-    "codigo": "IMC250A3",
-    "nome": "A3",
-    "categoria": "Couche 250g",
-    "subcategoria": "A3 Couche 250g",
-    "preco": 5.5
-  },
-  {
-    "id": "csv39",
-    "codigo": "IMC240A4",
-    "nome": "A4",
-    "categoria": "Cartão 240g",
-    "subcategoria": "A4 Cartão 240g",
-    "preco": 2.8
-  },
-  {
-    "id": "csv40",
-    "codigo": "IMC240A3",
-    "nome": "A3",
-    "categoria": "Cartão 240g",
-    "subcategoria": "A3 Cartão 240g",
-    "preco": 5.5
-  },
-  {
-    "id": "csv41",
-    "codigo": "IMC180A4",
-    "nome": "A4",
-    "categoria": "Cartão 180g",
-    "subcategoria": "A4 Cartão 180g",
-    "preco": 2.5
-  },
-  {
-    "id": "csv42",
-    "codigo": "IMC180A3",
-    "nome": "A3",
-    "categoria": "Cartão 180g",
-    "subcategoria": "A3 Cartão 180g",
-    "preco": 5.0
-  },
-  {
-    "id": "csv43",
-    "codigo": "IMLADA4",
-    "nome": "A4",
-    "categoria": "Papel Adesivo",
-    "subcategoria": "A4 Papel Adesivo",
-    "preco": 4.0
-  },
-  {
-    "id": "csv44",
-    "codigo": "IMLADA3",
-    "nome": "A3",
-    "categoria": "Papel Adesivo",
-    "subcategoria": "A3 Papel Adesivo",
-    "preco": 7.5
-  },
-  {
-    "id": "csv45",
-    "codigo": "IMLVADA4",
-    "nome": "A4",
-    "categoria": "Vinil Adesivo",
-    "subcategoria": "A4 Vinil Adesivo",
-    "preco": 10.0
-  },
-  {
-    "id": "csv46",
-    "codigo": "IMLVADA3",
-    "nome": "A3",
-    "categoria": "Vinil Adesivo",
-    "subcategoria": "A3 Vinil Adesivo",
-    "preco": 15.0
-  },
-  {
-    "id": "csv47",
-    "codigo": "IMPFOTOA5",
-    "nome": "A5 (15x21cm)",
-    "categoria": "Fotográfico",
-    "subcategoria": "A5 Fotográfico(15x21cm)",
-    "preco": 2.5
-  },
-  {
-    "id": "csv48",
-    "codigo": "IMPFOTOA4",
-    "nome": "A4 (21x29cm)",
-    "categoria": "Fotográfico",
-    "subcategoria": "A4 Fotográfico(21x29cm)",
-    "preco": 5.0
-  },
-  {
-    "id": "csv49",
-    "codigo": "ACSCEMIG",
-    "nome": "CEMIG / COPASA",
-    "categoria": "Serviços",
-    "subcategoria": "CEMIG / COPASA",
-    "preco": 2.0
-  },
-  {
-    "id": "csv50",
-    "codigo": "ACSTELEFONE",
-    "nome": "Contas Telefone",
-    "categoria": "Serviços",
-    "subcategoria": "Contas Telefone",
-    "preco": 2.0
-  },
-  {
-    "id": "csv51",
-    "codigo": "ACSCARTAO",
-    "nome": "Contas Cartão",
-    "categoria": "Serviços",
-    "subcategoria": "Contas Cartão",
-    "preco": 2.0
-  },
-  {
-    "id": "csv52",
-    "codigo": "ACSIPTU",
-    "nome": "IPTU",
-    "categoria": "Serviços",
-    "subcategoria": "IPTU",
-    "preco": 2.0
-  },
-  {
-    "id": "csv53",
-    "codigo": "ACSDETRAN",
-    "nome": "Serviços DETRAN",
-    "categoria": "Serviços",
-    "subcategoria": "Serviços DETRAN",
-    "preco": 2.0
-  },
-  {
-    "id": "csv54",
-    "codigo": "ACSEMAIL",
-    "nome": "Acessar E-mail",
-    "categoria": "Serviços",
-    "subcategoria": "Acessar E-mail",
-    "preco": 2.0
-  },
-  {
-    "id": "csv55",
-    "codigo": "ACSRENOVACAOCNH",
-    "nome": "Renovação CNH",
-    "categoria": "Serviços",
-    "subcategoria": "Renovação CNH",
-    "preco": 3.0
-  },
-  {
-    "id": "csv56",
-    "codigo": "ACSMARCACAORG",
-    "nome": "Marcação RG",
-    "categoria": "Serviços",
-    "subcategoria": "Marcação RG",
-    "preco": 3.0
-  },
-  {
-    "id": "csv57",
-    "codigo": "ENVKRAFT",
-    "nome": "Envelope A4 Kraft",
-    "categoria": "Envelopes",
-    "subcategoria": "Envelope A4 Kraft",
-    "preco": 1.0
-  },
-  {
-    "id": "csv58",
-    "codigo": "ENVBRANCO",
-    "nome": "Envelope A4 Branco",
-    "categoria": "Envelopes",
-    "subcategoria": "Envelope A4 Branco",
-    "preco": 1.0
-  },
-  {
-    "id": "csv59",
-    "codigo": "ENCAD20",
-    "nome": "Até 20 folhas",
-    "categoria": "Encadernações Espiral",
-    "subcategoria": "Até 20 folhas - Encadernação",
-    "preco": 3.0
-  },
-  {
-    "id": "csv60",
-    "codigo": "ENCAD50",
-    "nome": "21-50 folhas",
-    "categoria": "Encadernações Espiral",
-    "subcategoria": "21-50 folhas - Encadernação",
-    "preco": 4.0
-  },
-  {
-    "id": "csv61",
-    "codigo": "ENCAD100",
-    "nome": "51-100 folhas",
-    "categoria": "Encadernações Espiral",
-    "subcategoria": "51-100 folhas - Encadernação",
-    "preco": 5.0
-  },
-  {
-    "id": "csv62",
-    "codigo": "ENCAD200",
-    "nome": "101-200 folhas",
-    "categoria": "Encadernações Espiral",
-    "subcategoria": "101-200 folhas - Encadernação",
-    "preco": 6.0
-  },
-  {
-    "id": "csv63",
-    "codigo": "ENCAD300",
-    "nome": "201-300 folhas",
-    "categoria": "Encadernações Espiral",
-    "subcategoria": "201-300 folhas - Encadernação",
-    "preco": 8.0
-  },
-  {
-    "id": "csv64",
-    "codigo": "ENCAD400",
-    "nome": "301-400 folhas",
-    "categoria": "Encadernações Espiral",
-    "subcategoria": "301-400 folhas - Encadernação",
-    "preco": 10.0
-  },
-  {
-    "id": "csv65",
-    "codigo": "FOTO14x20",
-    "nome": "14x20cm (2 unidades)",
-    "categoria": "Impressão de Fotos",
-    "subcategoria": "14x20cm Impressão de Fotos(2 unidades)",
-    "preco": 7.0
-  },
-  {
-    "id": "csv66",
-    "codigo": "FOTO10x14",
-    "nome": "10x14cm (4 unidades)",
-    "categoria": "Impressão de Fotos",
-    "subcategoria": "10x14cm Impressão de Fotos(4 unidades)",
-    "preco": 7.0
-  },
-  {
-    "id": "csv67",
-    "codigo": "FOTOPOLAROID",
-    "nome": "Polaroid (4 unidades)",
-    "categoria": "Impressão de Fotos",
-    "subcategoria": "Polaroid Impressão de Fotos(4 unidades)",
-    "preco": 7.0
-  },
-  {
-    "id": "csv68",
-    "codigo": "PLASTDOC",
-    "nome": "Plastificação de Documento",
-    "categoria": "Plastificação",
-    "subcategoria": "Plastificação de Documento",
-    "preco": 3.0
-  },
- {
-    "id": "csv69",
-    "codigo": "PLASTA4",
-    "nome": "Plastificação A4",
-    "categoria": "Plastificação",
-    "subcategoria": "Plastificação A4",
-    "preco": 5.0
-  },
- {
-    "id": "csv70",
-    "codigo": "PLASTDOC",
-    "nome": "Plastificação A3",
-    "categoria": "Plastificação",
-    "subcategoria": "Plastificação A3",
-    "preco": 8.0
-  },
-{
-    "id": "csv71",
-    "codigo": "CURRIC",
-    "nome": "Currículo",
-    "categoria": "Serviços",
-    "subcategoria": "Currículo",
-    "preco": 6.0
-  },
-{
-    "id": "csv72",
-    "codigo": "FOTO3X4",
-    "nome": "3x4 (12 unidades)",
-    "categoria": "Impressão de Fotos",
-    "subcategoria": "3x4 Impressão de Fotos(12 unidades)",
-    "preco": 7.0
-  },
-  {
-    "id": "csv73",
-    "codigo": "DIGIT1",
-    "nome": "Digitalização 1ª Folha",
-    "categoria": "Digitalização",
-    "subcategoria": "Digitalização 1ª Folha",
-    "preco": 1.0
-  },
-   {
-    "id": "csv74",
-    "codigo": "DIGI2a20",
-    "nome": "Digitalização 2 a 20 páginas",
-    "categoria": "Digitalização",
-    "subcategoria": "Digitalização 2 a 20 páginas",
-    "preco": 0.25
-  },
-   {
-    "id": "csv75",
-    "codigo": "DIGI21a100",
-    "nome": "Digitalização 21 a 100 páginas",
-    "categoria": "Digitalização",
-    "subcategoria": "Digitalização 21 a 100 páginas",
-    "preco": 0.20
-  },
- {
-    "id": "csv76",
-    "codigo": "DIGI101MAIS",
-    "nome": "Digitalização 101 ou mais páginas",
-    "categoria": "Digitalização",
-    "subcategoria": "Digitalização 101 ou mais páginas",
-    "preco": 0.15
-  }
-  
-  ,
-  {
-    "id": "pap1",
-    "codigo": "PAPCISSPCOLOR",
-    "nome": "Caneta CIS Spiro Colorida",
-    "categoria": "Papelaria",
-    "subcategoria": "Material Escolar",
-    "preco": 3.5
-  },
-  {
-    "id": "pap2",
-    "codigo": "PAPCISTIKAZPRE",
-    "nome": "Cis Tik Azul ou Preta",
-    "categoria": "Papelaria",
-    "subcategoria": "Material Escolar",
-    "preco": 2.5
-  },
-  {
-    "id": "pap3",
-    "codigo": "PAPCOMPACTORAZPRE",
-    "nome": "Compactor Azul ou Preta",
-    "categoria": "Papelaria",
-    "subcategoria": "Material Escolar",
-    "preco": 2.5
-  },
-  {
-    "id": "pap4",
-    "codigo": "PAPMARCATEXTO",
-    "nome": "Marca Texto",
-    "categoria": "Papelaria",
-    "subcategoria": "Material Escolar",
-    "preco": 3.0
-  },
-  {
-    "id": "pap5",
-    "codigo": "PAPLAPISPRETO",
-    "nome": "Lápis Preto",
-    "categoria": "Papelaria",
-    "subcategoria": "Material Escolar",
-    "preco": 1.0
-  },
-  {
-    "id": "pap6",
-    "codigo": "PAPMARCCD",
-    "nome": "Marcador para CD",
-    "categoria": "Papelaria",
-    "subcategoria": "Material Escolar",
-    "preco": 5.0
-  },
-  {
-    "id": "pap7",
-    "codigo": "PAPCOLABASTAO",
-    "nome": "Cola Bastão",
-    "categoria": "Papelaria",
-    "subcategoria": "Material Escolar",
-    "preco": 3.0
-  },
-  {
-    "id": "pap8",
-    "codigo": "PAPBORRACHA",
-    "nome": "Borracha",
-    "categoria": "Papelaria",
-    "subcategoria": "Material Escolar",
-    "preco": 2.5
-  },
-  {
-    "id": "pap9",
-    "codigo": "PAPKITJARDIM",
-    "nome": "Kit Jardim",
-    "categoria": "Papelaria",
-    "subcategoria": "Material Escolar",
-    "preco": 7.5
-  },
-  {
-    "id": "pap10",
-    "codigo": "PAPBLOCRASC",
-    "nome": "Bloco de Rascunho",
-    "categoria": "Papelaria",
-    "subcategoria": "Material Escolar",
-    "preco": 2.0
-  },
-  {
-    "id": "pap11",
-    "codigo": "PAPPACA4",
-    "nome": "Pacote de Papel A4",
-    "categoria": "Papelaria",
-    "subcategoria": "Material Escolar",
-    "preco": 29.0
-  },
-  {
-    "id": "pap12",
-    "codigo": "QUA11X21",
-    "nome": "11x21cm",
-    "categoria": "Papelaria",
-    "subcategoria": "Quadros",
-    "preco": 12.0
-  },
-  {
-    "id": "pap13",
-    "codigo": "QUA12X21",
-    "nome": "12x21cm",
-    "categoria": "Papelaria",
-    "subcategoria": "Quadros",
-    "preco": 12.0
-  },
-  {
-    "id": "pap14",
-    "codigo": "QUA13X21",
-    "nome": "13x21cm",
-    "categoria": "Papelaria",
-    "subcategoria": "Quadros",
-    "preco": 12.0
-  },
-  {
-    "id": "pap15",
-    "codigo": "QUA14X21",
-    "nome": "14x21cm",
-    "categoria": "Papelaria",
-    "subcategoria": "Quadros",
-    "preco": 12.0
-  },
-  {
-    "id": "pap16",
-    "codigo": "QUA15X21",
-    "nome": "15x21cm",
-    "categoria": "Papelaria",
-    "subcategoria": "Quadros",
-    "preco": 12.0
-  },
-  {
-    "id": "pap17",
-    "codigo": "QUA16X21",
-    "nome": "16x21cm",
-    "categoria": "Papelaria",
-    "subcategoria": "Quadros",
-    "preco": 12.0
-  },
-  {
-    "id": "pap18",
-    "codigo": "QUA17X21",
-    "nome": "17x21cm",
-    "categoria": "Papelaria",
-    "subcategoria": "Quadros",
-    "preco": 12.0
-  },
-  {
-    "id": "pap19",
-    "codigo": "QUA18X21",
-    "nome": "18x21cm",
-    "categoria": "Papelaria",
-    "subcategoria": "Quadros",
-    "preco": 12.0
-  },
-  {
-    "id": "pap20",
-    "codigo": "PAPOUTROS1",
-    "nome": "Outros 1",
-    "categoria": "Papelaria",
-    "subcategoria": "Outros",
-    "preco": 12.0
-  },
-  {
-    "id": "pap21",
-    "codigo": "PAPOUTROS2",
-    "nome": "Outros 2",
-    "categoria": "Papelaria",
-    "subcategoria": "Outros",
-    "preco": 12.0
-  },
-  {
-    "id": "pap22",
-    "codigo": "PAPOUTROS3",
-    "nome": "Outros 3",
-    "categoria": "Papelaria",
-    "subcategoria": "Outros",
-    "preco": 12.0
-  },
-  {
-    "id": "pap23",
-    "codigo": "PAPOUTROS4",
-    "nome": "Outros 4",
-    "categoria": "Papelaria",
-    "subcategoria": "Outros",
-    "preco": 12.0
-  },
-  {
-    "id": "pap24",
-    "codigo": "PAPOUTROS5",
-    "nome": "Outros 5",
-    "categoria": "Papelaria",
-    "subcategoria": "Outros",
-    "preco": 12.0
-  },
-  {
-    "id": "pap25",
-    "codigo": "PAPOUTROS6",
-    "nome": "Outros 6",
-    "categoria": "Papelaria",
-    "subcategoria": "Outros",
-    "preco": 12.0
-  },
-  {
-    "id": "pap26",
-    "codigo": "PAPOUTROS7",
-    "nome": "Outros 7",
-    "categoria": "Papelaria",
-    "subcategoria": "Outros",
-    "preco": 12.0
-  },
-  {
-    "id": "pap27",
-    "codigo": "PAPOUTROS8",
-    "nome": "Outros 8",
-    "categoria": "Papelaria",
-    "subcategoria": "Outros",
-    "preco": 12.0
-  },
-  {
-    "id": "pap28",
-    "codigo": "PAPOUTROS9",
-    "nome": "Outros 9",
-    "categoria": "Papelaria",
-    "subcategoria": "Outros",
-    "preco": 12.0
-  },
-  {
-    "id": "pap29",
-    "codigo": "PAPOUTROS10",
-    "nome": "Outros 10",
-    "categoria": "Papelaria",
-    "subcategoria": "Outros",
-    "preco": 12.0
-  },
-  {
-    "id": "pap30",
-    "codigo": "PAPOUTROS11",
-    "nome": "Outros 11",
-    "categoria": "Papelaria",
-    "subcategoria": "Outros",
-    "preco": 12.0
-  }
+  // ===== A4 Preto e Branco =====
+  { id: "pb1", codigo: "PB1", nome: "1 unidade", categoria: "Impressões", subcategoria: "A4 Preto e Branco", preco: 1.00 },
+  { id: "pb2", codigo: "PB2a30", nome: "2 a 30 unidades", categoria: "Impressões", subcategoria: "A4 Preto e Branco", preco: 0.50 },
+  { id: "pb3", codigo: "PB31a60", nome: "31 a 60 unidades", categoria: "Impressões", subcategoria: "A4 Preto e Branco", preco: 0.45 },
+  { id: "pb4", codigo: "PB61a100", nome: "61 a 100 unidades", categoria: "Impressões", subcategoria: "A4 Preto e Branco", preco: 0.40 },
+  { id: "pb5", codigo: "PB101a200", nome: "101 a 200 unidades", categoria: "Impressões", subcategoria: "A4 Preto e Branco", preco: 0.35 },
+  { id: "pb6", codigo: "PB201mais", nome: "201 ou mais unidades", categoria: "Impressões", subcategoria: "A4 Preto e Branco", preco: 0.30 },
 
+  // ===== A4 Colorido Pigmentada =====
+  { id: "cp1", codigo: "CP1a10", nome: "1 a 10 unidades", categoria: "Impressões", subcategoria: "A4 Colorido Pigmentada", preco: 1.50 },
+  { id: "cp2", codigo: "CP11a30", nome: "11 a 30 unidades", categoria: "Impressões", subcategoria: "A4 Colorido Pigmentada", preco: 0.95 },
+  { id: "cp3", codigo: "CP31a60", nome: "31 a 60 unidades", categoria: "Impressões", subcategoria: "A4 Colorido Pigmentada", preco: 0.90 },
+  { id: "cp4", codigo: "CP61a100", nome: "61 a 100 unidades", categoria: "Impressões", subcategoria: "A4 Colorido Pigmentada", preco: 0.85 },
+  { id: "cp5", codigo: "CP101a200", nome: "101 a 200 unidades", categoria: "Impressões", subcategoria: "A4 Colorido Pigmentada", preco: 0.80 },
+  { id: "cp6", codigo: "CP201mais", nome: "201 ou mais unidades", categoria: "Impressões", subcategoria: "A4 Colorido Pigmentada", preco: 0.75 },
+
+  // ===== A4 Colorido Laser =====
+  { id: "cl1", codigo: "CL1a10", nome: "1 a 10 unidades", categoria: "Impressões", subcategoria: "A4 Colorido Laser", preco: 2.00 },
+  { id: "cl2", codigo: "CL11a30", nome: "11 a 30 unidades", categoria: "Impressões", subcategoria: "A4 Colorido Laser", preco: 1.80 },
+  { id: "cl3", codigo: "CL31a100", nome: "31 a 100 unidades", categoria: "Impressões", subcategoria: "A4 Colorido Laser", preco: 1.60 },
+  { id: "cl4", codigo: "CL101mais", nome: "101 ou mais unidades", categoria: "Impressões", subcategoria: "A4 Colorido Laser", preco: 1.40 },
+
+  // ===== A3 Colorido =====
+  { id: "a3c1", codigo: "A3C1a10", nome: "1 a 10 unidades", categoria: "Impressões", subcategoria: "A3 Colorido", preco: 4.50 },
+  { id: "a3c2", codigo: "A3C11a30", nome: "11 a 30 unidades", categoria: "Impressões", subcategoria: "A3 Colorido", preco: 4.25 },
+  { id: "a3c3", codigo: "A3C31a100", nome: "31 a 100 unidades", categoria: "Impressões", subcategoria: "A3 Colorido", preco: 4.00 },
+  { id: "a3c4", codigo: "A3C101mais", nome: "101 ou mais unidades", categoria: "Impressões", subcategoria: "A3 Colorido", preco: 3.90 },
+
+  // ===== Papel Couchê 250g =====
+  { id: "cou1", codigo: "COU2501a30", nome: "1 a 30 unidades", categoria: "Papéis Especiais", subcategoria: "Papel Couchê 250g", preco: 4.00 },
+  { id: "cou2", codigo: "COU25031a100", nome: "31 a 100 unidades", categoria: "Papéis Especiais", subcategoria: "Papel Couchê 250g", preco: 3.70 },
+  { id: "cou3", codigo: "COU250101mais", nome: "101 ou mais unidades", categoria: "Papéis Especiais", subcategoria: "Papel Couchê 250g", preco: 3.50 },
+
+  // ===== Papel Cartão 240g =====
+  { id: "car1", codigo: "CAR2401a30", nome: "1 a 30 unidades", categoria: "Papéis Especiais", subcategoria: "Papel Cartão 240g", preco: 3.50 },
+  { id: "car2", codigo: "CAR24031a100", nome: "31 a 100 unidades", categoria: "Papéis Especiais", subcategoria: "Papel Cartão 240g", preco: 3.20 },
+  { id: "car3", codigo: "CAR240101mais", nome: "101 ou mais unidades", categoria: "Papéis Especiais", subcategoria: "Papel Cartão 240g", preco: 3.00 },
+
+  // ===== Papel Couchê 115g =====
+  { id: "cou1151", codigo: "COU1151a30", nome: "1 a 30 unidades", categoria: "Papéis Especiais", subcategoria: "Papel Couchê 115g", preco: 3.00 },
+  { id: "cou1152", codigo: "COU11531a100", nome: "31 a 100 unidades", categoria: "Papéis Especiais", subcategoria: "Papel Couchê 115g", preco: 2.90 },
+  { id: "cou1153", codigo: "COU115101mais", nome: "101 ou mais unidades", categoria: "Papéis Especiais", subcategoria: "Papel Couchê 115g", preco: 2.60 },
+
+  // ===== Papel Cartão 180g =====
+  { id: "car1801", codigo: "CAR1801a30", nome: "1 a 30 unidades", categoria: "Papéis Especiais", subcategoria: "Papel Cartão 180g", preco: 3.00 },
+  { id: "car1802", codigo: "CAR18031a100", nome: "31 a 100 unidades", categoria: "Papéis Especiais", subcategoria: "Papel Cartão 180g", preco: 2.90 },
+  { id: "car1803", codigo: "CAR180101mais", nome: "101 ou mais unidades", categoria: "Papéis Especiais", subcategoria: "Papel Cartão 180g", preco: 2.60 },
+
+  // ===== Digitalização (Scanner) =====
+  { id: "dig1", codigo: "DIG1", nome: "1 unidade", categoria: "Digitalização", subcategoria: "Scanner", preco: 1.00 },
+  { id: "dig2", codigo: "DIG2mais", nome: "2 ou mais unidades", categoria: "Digitalização", subcategoria: "Scanner", preco: 0.50 },
+
+  // ===== Encadernações =====
+  { id: "enc1", codigo: "ENC20", nome: "Até 20 folhas", categoria: "Encadernações", subcategoria: "Encadernação Espiral", preco: 3.00 },
+  { id: "enc2", codigo: "ENC50", nome: "21-50 folhas", categoria: "Encadernações", subcategoria: "Encadernação Espiral", preco: 4.00 },
+  { id: "enc3", codigo: "ENC100", nome: "51-100 folhas", categoria: "Encadernações", subcategoria: "Encadernação Espiral", preco: 5.00 },
+  { id: "enc4", codigo: "ENC200", nome: "101-200 folhas", categoria: "Encadernações", subcategoria: "Encadernação Espiral", preco: 6.00 },
+  { id: "enc5", codigo: "ENC300", nome: "201-300 folhas", categoria: "Encadernações", subcategoria: "Encadernação Espiral", preco: 8.00 },
+  { id: "enc6", codigo: "ENC400", nome: "301-400 folhas", categoria: "Encadernações", subcategoria: "Encadernação Espiral", preco: 10.00 }
 ];
 
 const DEFAULT_EMPRESA = {
@@ -882,61 +90,30 @@ const DEFAULT_EMPRESA = {
 };
 
 const CAT_ICONS = {
-  'Cópias (Xerox)': '📄',
-  'Impressões Pigmentadas': '🖨️',
-  'Impressões Laser': '🖨️',
-  'Couche 250g': '🧾',
-  'Cartão 240g': '🧾',
-  'Cartão 180g': '🧾',
-  'Papel Adesivo': '🏷️',
-  'Vinil Adesivo': '🏷️',
-  'Fotográfico': '🖼️',
-  'Serviços': '🛠️',
-  'Envelopes': '✉️',
-  'Plastificação': '📚',
-  'Encadernações Espiral': '📚',
-  'Impressão de Fotos': '📸',
-  'Digitalização': '🧾',
-  'Papelaria': '🖍️',
+  'Impressões': '🖨️',
+  'Papéis Especiais': '🧾',
+  'Digitalização': '📄',
+  'Encadernações': '📚'
 };
 
-
 const CATEGORY_MENU_ORDER = [
-  'Cópias (Xerox)',
-  'Impressões Pigmentadas',
-  'Impressões Laser',
-  'Couche 250g',
-  'Cartão 240g',
-  'Cartão 180g',
-  'Papel Adesivo',
-  'Vinil Adesivo',
-  'Fotográfico',
-  'Serviços',
-  'Encadernações Espiral',
-  'Impressão de Fotos',
-  'Plastificação',
-  'Envelopes',
-  'Papelaria'
+  'Impressões',
+  'Papéis Especiais',
+  'Digitalização',
+  'Encadernações'
 ];
 
 const CATEGORY_MENU_LABELS = {
-  'Cópias (Xerox)': 'CÓPIAS',
-  'Impressões Pigmentadas': 'IMPRESSÕES PIGMENTADAS',
-  'Impressões Laser': 'IMPRESSÕES A LASER',
-  'Couche 250g': 'COUCHÊ 250G',
-  'Cartão 240g': 'CARTÃO 240G',
-  'Cartão 180g': 'CARTÃO 180G',
-  'Papel Adesivo': 'PAPEL ADESIVO',
-  'Vinil Adesivo': 'VINIL ADESIVO',
-  'Fotográfico': 'FOTOGRÁFICO',
-  'Serviços': 'SERVIÇOS',
-  'Encadernações Espiral': 'ENCADERNAÇÕES',
-  'Impressão de Fotos': 'IMPRESSÕES DE FOTO',
-  'Plastificação': 'PLASTIFICAÇÕES',
-  'Envelopes': 'ENVELOPES',
-  'Digitalização': 'DIGITALIZAÇÕES',
-  'Papelaria': 'PAPELARIA'
+  'Impressões': 'IMPRESSÕES',
+  'Papéis Especiais': 'PAPÉIS ESPECIAIS',
+  'Digitalização': 'DIGITALIZAÇÃO',
+  'Encadernações': 'ENCADERNAÇÕES'
 };
+
+// O restante do código permanece IGUAL ao original...
+// Incluindo: STORAGE, INIT, AUTH, CAIXA, SCREENS, HEADER, CATEGORIES,
+// SEARCH, CUSTOMER, PAYMENT, CUPOM, DASHBOARD, HISTORICO, CONFIGURACOES,
+// MODAL HELPERS, TOAST, UTILS
 
 // ===== STORAGE =====
 function save(key, val) { localStorage.setItem('pdv_'+key, JSON.stringify(val)); }
@@ -979,7 +156,6 @@ function updateCaixaDatetime() {
   if (el) el.textContent = formatDateTime(new Date());
 }
 
-// ===== CATEGORIAS SUGERIDAS (nova funcionalidade) =====
 function populateCategoryDatalist() {
   const datalist = document.getElementById('category-datalist');
   if (!datalist) return;
@@ -991,7 +167,6 @@ function populateCategoryDatalist() {
     datalist.appendChild(opt);
   });
 }
-
 
 function mergeDefaultCatalog() {
   const existingByCode = new Map((state.products || []).map(p => [String(p.codigo || '').trim().toLowerCase(), p]));
@@ -1154,7 +329,6 @@ function buildCategories() {
     renderFloatingMenu(null, []);
   }
 }
-
 
 function getOrderedCategories(categories) {
   const available = [...categories];
@@ -1380,8 +554,8 @@ function confirmAddProduct() {
     state.cart.push({ 
       ...p, 
       qty, 
-      desconto: 0,           // novo campo
-      tipoDesconto: 'percent' // novo campo
+      desconto: 0,
+      tipoDesconto: 'percent'
     });
   }
   
@@ -1560,7 +734,6 @@ function prosseguirSemCliente() {
   closeModal('modal-cliente');
 }
 
-// Mask CPF
 document.getElementById('cliente-cpf').addEventListener('input', function() {
   let v = this.value.replace(/\D/g,'');
   if (v.length > 9) v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/,'$1.$2.$3-$4');
@@ -1648,7 +821,7 @@ function paymentLabel(p) {
   return labels[p] || p;
 }
 
-// ===== CUPOM + PDF (nova funcionalidade) =====
+// ===== CUPOM + PDF =====
 function gerarCupom(venda) {
   const emp = state.empresa;
   const num = String(venda.num).padStart(6, '0');
@@ -1866,7 +1039,6 @@ function confirmarFecharCaixa() {
   
   closeModal('modal-fechar-caixa');
   
-  // Gerar relatório do dia antes de fechar
   gerarRelatorioFechamento(fechamento, vendas);
 }
 
@@ -2130,7 +1302,7 @@ function gerarRelatorioFechamento(fechamento, vendas) {
   setTimeout(() => showScreen('screen-login'), 500);
 }
 
-// ===== DASHBOARD (nova funcionalidade) =====
+// ===== DASHBOARD =====
 function loadDashboard() {
   const vendas = load('vendas', []).filter(v => v.status === 'concluida');
   const now = new Date();
@@ -2657,7 +1829,7 @@ function alterarSenha() {
   showToast('Senha alterada com sucesso!', 'success');
 }
 
-// ===== BACKUP JSON (mantido) =====
+// ===== BACKUP JSON =====
 function exportarDados() {
   const data = {
     exportado: new Date().toISOString(),
@@ -2692,7 +1864,7 @@ function importarDados(e) {
   reader.readAsText(file);
 }
 
-// ===== EXCEL / CSV (nova funcionalidade) =====
+// ===== EXCEL / CSV =====
 function exportarVendasExcel() {
   const vendas = load('vendas', []);
   let csv = 'Número,Data,Hora,Cliente,Total,Pagamento,Itens\n';
